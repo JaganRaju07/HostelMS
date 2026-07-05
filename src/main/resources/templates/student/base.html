@@ -1,0 +1,89 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:fragment="head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Hostel Management System</title>
+            <link rel="icon" type="image/png" href="/assets/img/bootstraper-logo.png">
+    <link href="/assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="/assets/vendor/datatables/datatables.min.css" rel="stylesheet">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/widgEditor.css" rel="stylesheet">
+    <link href="/assets/css/master.css" rel="stylesheet"> 
+</head>
+
+<body>
+<th:block  th:fragment="header">
+    <div class="wrapper">
+        <nav id="sidebar" >
+            <div class="sidebar-header">
+                <img src="/assets/img/bootstraper-logo.png" alt="bootraper logo" width="55" class="app-logo">
+                <h4>Hostel Management System</h4>
+            </div>
+            <ul class="list-unstyled components text-secondary">
+                <li>
+                    <a href="/student/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+               
+                <li>
+                    <a href="/student/rooms"><i class="fas fa-table"></i>Room Allocation </a>
+                </li>
+                  <li>
+                    <a href="/student/monthlyfees"><i class="fas fa-table"></i>Hostel Fees </a>
+                </li> 
+                   <li>
+                    <a href="/student/complaints"><i class="fas fa-table"></i> Complaints</a>
+                </li>
+                    <li>
+                    <a href="/student/visitors"><i class="fas fa-table"></i> Visitors</a>
+                </li>
+                 
+                
+            </ul>
+        </nav>
+        <div id="body" >
+            <!-- navbar navigation component -->
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-light">
+                    <i class="fas fa-bars"></i><span></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ms-auto">
+                       <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="#" id="nav2" class="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <span sec:authentication="name"></span> <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a href="/student/myprofile" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
+                                        <li><a href="/student/changepassword" class="dropdown-item"><i class="fas fa-user-lock"></i>Change Password</a></li> 
+                                        <div class="dropdown-divider"></div>
+                                        <li><a href="/logout" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- end of navbar navigation -->
+           </th:block>
+    
+    <th:block  th:fragment="footer">
+         </div>
+    </div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script> 
+    <script src="/assets/vendor/datatables/datatables.min.js"></script> 
+    <script src="/assets/js/widgEditor.js"></script> 
+    <script src="/assets/js/script.js"></script>
+    </th:block>
+</body>
+
+</html>

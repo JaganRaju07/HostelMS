@@ -1,0 +1,113 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:block  th:replace="admin/base :: header">
+   </th:block>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Students</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="  col-md-12 m-auto   mt-3">
+                            <div class="card">
+                            <div class="card-body"> 
+                            <div class="row p-3">
+                            <div class="form-check col-4">
+                                                  <input class="form-check-input" value=1 type="radio" name="status" id="radio1" checked>
+                                                  <label class="form-check-label" for="radio1">
+                                                   Active Only
+                                                  </label>
+                                                </div>
+                                                <div class="form-check  col-4">
+                                                  <input class="form-check-input"  value=0 type="radio" name="status" id="radio2" >
+                                                  <label class="form-check-label" for="radio2">
+                                                  Inactive Only
+                                                  </label>
+                                                </div>
+                                                </div>
+<a   type="button" class="btn btn-primary  float-end m-2" href="/admin/addstudent">Add </a> 
+            <table id="listtab" class="table table-striped table-hover table-bordered table-sm" cellspacing="0" width="100%" style="background: white;padding: 5px">
+
+                <thead>
+                    <tr> 
+                        <th>ID</th>  
+                        <th>Name</th>  
+                        <th>Mobile</th>   
+                        <th>Course</th>  
+                        <th>Room</th>  
+                        <th>Status</th>  
+                        <th>Creation time</th>  
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+              
+                <tbody>
+                    
+</tbody>
+</table>
+ 
+</div>
+</div> 
+</div>
+</div>
+</div>
+</div>
+<th:block  th:replace="admin/base :: footer">
+</th:block>
+<script> 
+
+ function loaddata()
+    { 
+	    var status=$("[name=status]:checked").val();
+    	 if(dtable!=null) $('#listtab').DataTable().clear().destroy();
+    	 var fd=new FormData();
+    	 fd.append('action','readbystatus');
+    	 fd.append('status',status);
+    	 
+        $.ajax({
+               type: "POST",
+               url: "/admin/student",  
+               data:fd , // serializes the form's elements. 
+               processData: false,
+               contentType:false, 
+     		    dataType: "json",
+               success: function(data)
+               {
+     		        if(data.success)
+     		        	{
+     		        	$("#listtab tbody").html("<h2>Loading.........</h2>");
+     		        	var strhtml=""
+     		        	data=data.data;
+     		        	  for(var i=0;i<data.length;i++)
+     		        		  {
+     		        		     strhtml+="<tr>"; 
+     		        		     strhtml+="<td>"+data[i].id+"</td><td>"+data[i].name+"</td><td>"+data[i].mobile+"</td><td>"+data[i].course+"</td><td>"+data[i].room+"</td><td>"+(data[i].status==1?'Active':'Inactive')+"</td><td>"+data[i].creationtime+"</td>"; 
+     		        		      strhtml+="<td><a href='/admin/editstudent/"+data[i].id+"' class='btn btn-info btn-sm active'><i class='fa fa-pencil'></i></a>";
+     		        		     strhtml+="</td>";
+     		        		     strhtml+="</tr>";
+     		        		  }
+     		        	$("#listtab tbody").html(strhtml); 
+     		        	dtable=$('#listtab').DataTable();  
+     		        	}
+     		      }
+             });
+    }
+ var dtable;
+ (function(){
+ loaddata(); 
+ 
+ $("[name=status]").change(loaddata);
+ 
+ })();
+ </script>
+</body>
+</html>

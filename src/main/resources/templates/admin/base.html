@@ -1,0 +1,136 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:fragment="head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Hostel Management System</title>
+            <link rel="icon" type="image/png" href="/assets/img/bootstraper-logo.png">
+    <link href="/assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="/assets/vendor/datatables/datatables.min.css" rel="stylesheet">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/widgEditor.css" rel="stylesheet">
+    <link href="/assets/css/master.css" rel="stylesheet"> 
+</head>
+
+<body>
+<th:block  th:fragment="header">
+    <div class="wrapper">
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <img src="/assets/img/bootstraper-logo.png" alt="bootraper logo" width="55" class="app-logo">
+                <h4>Hostel Management System</h4>
+            </div>
+            <ul class="list-unstyled components text-secondary">
+                <li>
+                    <a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="/admin/blocks"><i class="fas fa-table"></i> Blocks</a>
+                </li>
+                <li>
+                    <a href="/admin/rooms"><i class="fas fa-table"></i> Rooms</a>
+                </li>
+                
+                <li>
+                    <a href="#uielementsmenu1" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-table"></i>Students</a>
+                    <ul class="collapse list-unstyled" id="uielementsmenu1">
+                      <li>
+                            <a href="/admin/departments"><i class="fas fa-angle-right"></i> Departments</a>
+                        </li>
+                         <li>
+                            <a href="/admin/courses"><i class="fas fa-angle-right"></i> Courses</a>
+                        </li>
+                        <li>
+                            <a href="/admin/addstudent"><i class="fas fa-angle-right"></i> Add Student</a>
+                        </li>
+                        <li>
+                            <a href="/admin/studentmanage"><i class="fas fa-angle-right"></i> Manage Student</a>
+                        </li>
+                        <li>
+                            <a href="/admin/allocateroom"><i class="fas fa-angle-right"></i> Allocate Room</a>
+                        </li> 
+                         
+                    </ul>
+                </li>
+                  <li>
+                    <a href="#uielementsmenu2" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-table"></i>Fees Management</a>
+                    <ul class="collapse list-unstyled" id="uielementsmenu2">
+                    
+                        
+                        <li>
+                            <a href="/admin/generatefees"><i class="fas fa-angle-right"></i> Generate</a>
+                        </li>
+                             <li>
+                            <a href="/admin/managefees"><i class="fas fa-angle-right"></i>Payment Manage</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#authmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-table"></i> Noticeboard</a>
+                    <ul class="collapse list-unstyled" id="authmenu">
+                        <li>
+                            <a href="/admin/addnoticeboard"><i class="fas fa-angle-right"></i> Add</a>
+                        </li>
+                        <li>
+                            <a href="/admin/noticeboard"><i class="fas fa-angle-right"></i> Manage</a>
+                        </li> 
+                    </ul>
+                </li>
+                   <li>
+                    <a href="/admin/complaints"><i class="fas fa-table"></i> Complaints</a>
+                </li>
+                    <li>
+                    <a href="/admin/visitors"><i class="fas fa-table"></i> Visitors</a>
+                </li>
+                    <li>
+                    <a href="/admin/settings"><i class="fas fa-table"></i> Settings</a>
+                </li>
+                
+            </ul>
+        </nav>
+        <div id="body" class="active">
+            <!-- navbar navigation component -->
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-light">
+                    <i class="fas fa-bars"></i><span></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ms-auto">
+                       <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="#" id="nav2" class="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <span sec:authentication="name"></span> <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a href="/admin/profile" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
+                                        <li><a href="/admin/changepassword" class="dropdown-item"><i class="fas fa-user-lock"></i>Change Password</a></li> 
+                                        <div class="dropdown-divider"></div>
+                                        <li><a href="/logout" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- end of navbar navigation -->
+           </th:block>
+    
+    <th:block  th:fragment="footer">
+         </div>
+    </div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script> 
+    <script src="/assets/vendor/datatables/datatables.min.js"></script> 
+    <script src="/assets/js/widgEditor.js"></script> 
+    <script src="/assets/js/script.js"></script>
+    </th:block>
+</body>
+
+</html>

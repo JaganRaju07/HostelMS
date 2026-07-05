@@ -1,0 +1,230 @@
+<!doctype html>
+<!-- 
+* Bootstrap Simple Admin Template
+* Version: 2.1
+* Author: Alexis Luna
+* Website: https://github.com/alexis-luna/bootstrap-simple-admin-template
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <title>Hostel Management System</title>
+        <link rel="icon" type="image/png" href="/assets/img/bootstraper-logo.png">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/auth.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="auth-content col-md-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <img class="brand" src="/assets/img/bootstraper-logo.png" width="100" alt="logo">
+                       <h4>Hostel Management System</h4>
+                    </div>
+                    <h5 class="mb-4 text-muted">Create new account</h5>
+                      <form id="signup" method="POST"  action="/registerdb">
+                         <div class="form-group row">
+                        <label for="title" class="col-md-3">Name</label>
+                        <div class=" col-md-7">
+                        <input type="text" name="name" class="form-control" id="name"  placeholder="Enter  name" required>
+                    </div>
+                    </div>
+                 
+ 
+   <div class="form-group row">
+    <label for="branch" class="col-md-3     required">Department</label> 
+    <div class="col-md-3">
+         <select id="department" name="department" onchange="loadcourses(this.value)" required="required" class="custom-select form-select"> 
+		<option></option>
+		<option th:value="${d.getId()}" th:text="${d.getName()}" th:each="d: ${departments}"></option>  
+      </select>
+    </div>
+   
+    <label for="course" class="col-md-3     required">Course</label> 
+    <div class="col-md-3">
+         <select id="course" name="course" required="required" class="custom-select form-select"> 
+		 
+      </select>
+    </div>
+  </div>
+     <div class="form-group row">
+    <label for="year" class="col-md-3     required">Year</label> 
+    <div class="col-md-3">
+      <select id="year" name="year" required="required" class="custom-select form-select">
+	   <option value=1>1st Year</option>
+	  <option value=2>2nd Year</option>
+      <option value=3>3rd Year</option>
+	   <option value=4>4th Year</option>
+      </select>
+    </div>
+ 
+    <label for="regno" class="col-md-3    required">Reg.No</label> 
+    <div class="col-md-3">
+      <input id="regno" name="regno" type="text" class="form-control" required="required">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="mobile" class="col-md-3    required">Mobile</label> 
+    <div class="col-md-7">
+      <input id="mobile" name="mobile" type="text" maxlength=10 minlength=10 class="form-control" required="required">
+    </div>
+    </div>
+   <div class="form-group row">
+    <label for="email" class="col-md-3  required">Email</label> 
+    <div class="col-md-7">
+      <input id="email" name="email" type="text" class="form-control">
+    </div>
+  </div>
+ 
+     
+      <div class="form-group row">
+    
+   <label for="sspid" class="col-md-3    required">Date of Birth </label> 
+    <div class="col-md-3">
+      <input id="dob" name="dob" type="date" class="form-control" required="required">
+    </div>
+	 
+
+                 <label for="gender" class="col-md-3    required">Gender: </label>
+<div class="col-md-3">
+                  <div class="form-check form-check-inline   ">
+                    <input class="form-check-input" type="radio" name="gender" id="femaleGender"
+                      value="Male" checked />
+                    <label class="form-check-label" for="gender">Male</label>
+                  </div>
+
+                  <div class="form-check form-check-inline    ">
+                    <input class="form-check-input" type="radio" name="gender" id="maleGender"
+                      value="Female" />
+                    <label class="form-check-label" for="gender">Female</label>
+                  </div>
+ </div>
+                </div>
+	<div class="form-group row">
+                        <label for="title" class="col-md-3">Parent/Guardian Name</label>
+                        <div class=" col-md-7">
+                        <input type="text" name="parentname" class="form-control" id="parentname"  placeholder="Enter  name" required>
+                    </div>
+                    </div>
+	<div class="form-group row">
+    <label for="mobile" class="col-md-3    required">Parent/Guardian Mobile</label> 
+    <div class="col-md-7">
+      <input id="parentmobile" name="parentmobile" type="text" maxlength=10 minlength=10 class="form-control" required="required">
+    </div>
+    </div>
+      <div class="form-group row">
+    <label for="col-md-7" class="col-md-3    required">Address</label> 
+    <div class="col-7">
+      <textarea id="address" name="address" class="form-control" required="required"></textarea>
+    </div>
+    </div>
+ <div class="form-group row">
+    <label for="password" class="col-md-3  required">Password</label> 
+    <div class="col-md-7">
+      <input id="password" name="password" type="password" class="form-control" required>
+    </div>
+  </div>       
+                        <div class="form-group row">
+                         <label for="password" class="col-md-3  required"> </label> 
+    <div class="col-md-7">
+        <button type="submit" class="btn btn-primary w-50 float-end">Register</button> 
+        </div> 
+        </div>
+                        
+                          <div class="col-md-12">
+        <div class="alert alert-danger" style="display:none"></div>
+        <div class="alert alert-success"  style="display:none"></div>
+      </div>
+                    </form>
+              
+                </div>
+            </div>
+                  <p class="mb-0 h4 float-end">Allready have an account? <a href="/login">Log in</a></p>
+        </div>
+    </div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    
+    <script>
+ 
+  (function ($) {  
+		
+	  $('input[name=fullname]').on('keypress',function(event){
+			 return validatealpha(event);		 
+		 });  
+
+
+$('input[name=mobileno]').on('keypress',function(event){
+		 return validatemobile(event);		 
+	 });		
+	
+$("#signup").off( "submit");
+$("#signup").submit(function(e) {
+
+   e.preventDefault(); // avoid to execute the actual submit of the form.
+   $('#submit').prop('disabled',true);
+   var form = $(this);
+	  $(".alert").show().hide();
+   var url = form.attr('action'); 
+   var data=form.serialize(); 
+   $.ajax({
+          type: "POST",
+          url: $(this).attr("action"),  
+          data:data , // serializes the form's elements.
+		    dataType: "json",
+          success: function(data)
+          { 
+		      if(data.success)
+               {
+		    	    $(".alert.alert-success").html(data.html).show();
+		    	    $("#signup").trigger('reset');
+		    		$("#user-availability-status").html(""); 
+		    	    //const myTimeout = setTimeout(function() {document.location.href="/login";}, 2000);
+		    	  } // show response from the php script.
+			  else
+				  {
+				     $(".alert.alert-danger").html(data.html).show();
+				     $('#submit').prop('disabled',false);
+				  }
+		       
+		  
+		      }
+        });
+		     });  
+})(jQuery); 
+  
+  function loadcourses(dept)
+  {  
+		 data={department:dept} ; 
+ $.ajax({
+        type: "POST",
+        url: "/loadcourses",  
+        data:data , // serializes the form's elements.
+		    dataType: "json",
+        success: function(data)
+        {
+		        if(data.success)
+		        	{
+		        	 
+		        	var strhtml=""
+		        	data=data.data;
+		        	  for(var i=0;i<data.length;i++)
+		        		  { 
+		        		     strhtml+="<option value='"+data[i].id+"'>"+data[i].name+"</option>";  
+		        		  }
+		        	$("select[name=course]").html(strhtml); 
+		        	 
+		        	}
+		      }
+      });
+  }
+  </script>
+   
+</body>
+
+</html>

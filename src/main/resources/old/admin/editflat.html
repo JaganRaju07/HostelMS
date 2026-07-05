@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block>
+ 
+
+   
+ 
+<div class="card card-info">
+<div class="card-heading">
+Edit Flat of <span th:text="${building.name}"></span>
+</div>
+<div class="card-body">
+<form class="ajaxfrm"   data-reload=1    data-reset=0 role="form" method="post"   action="/admin/updateflatdb" >
+<input type="hidden" name="building" th:value="${building.id}">
+<input type="hidden" name="id" th:value="${flat.id}">
+<div class="form-group">
+<label>Owner</label>
+ <select class="form-select" name="owner" required>  
+                   <option th:each="i : ${owners}" th:value="${i.id}" th:text="${i.fullname}" th:selected="(${i.id}==*{flat.owner})"></option>
+                </select>
+                 </div>
+
+ <div class="form-group">
+<label>Flat No.</label>
+<input class="form-control" type="text" name="flatno" autocomplete="off" th:value="${flat.flatno}" required  />
+</div>
+<div class="form-group row">
+<div class="col">
+<label>Floor</label>
+ <select class="form-select" name="floor" required> 
+            <option value=0  th:selected="(${i}==*{0})">Ground</option>
+                   <option th:each="i : ${#numbers.sequence( 1, 100)}" th:value="${i}" th:text="${i}" th:selected="(${i}==*{flat.floor})"></option>
+                </select>
+</div>
+
+
+<div class="col">
+<label>Bed Rooms</label>
+ <select class="form-select" name="bedrooms" required> 
+                   <option th:each="i : ${#numbers.sequence( 1, 100)}" th:value="${i}" th:text="${i}"  th:selected="(${i}==*{flat.bedrooms})"></option>
+                </select>
+                </div>
+
+<div class="col">
+<label>Bath Rooms</label>
+ <select class="form-select" name="bathrooms" required> 
+                   <option th:each="i : ${#numbers.sequence( 1, 100)}" th:value="${i}" th:text="${i}"  th:selected="(${i}==*{flat.bathrooms})"></option>
+                </select>
+                </div>                
+</div>
+
+<hr/>
+<div class="form-group row">
+<div class="col">
+<label>Occupied As</label>
+ <select class="form-select" name="occupiedas" required> 
+                   <option th:each="i : ${occupations}" th:value="${i}" th:text="${i}"   th:selected="(${#strings.equals(i,flatocc.occupiedas)})"></option>
+                </select>
+</div>
+
+
+<div class="col">
+<label>Occupied By</label>
+ <select class="form-select " name="occupiedby" required> 
+                   <option value=0>--NA--</option>
+                   <option th:each="i : ${members}" th:value="${i.id}" th:text="${i.fullname}"  th:selected="(${i.id}==*{flatocc.occupiedby})"></option>
+                </select>
+                </div>
+
+<div class="col">
+<label>From Date</label>
+ <input class="form-control" type="date" name="fromdt" autocomplete="off" th:value="${flatocc.fromdt}"  required  />
+
+                </div>    
+<div class="col">
+<label>To Date</label>
+ <input class="form-control" type="date" name="todt" autocomplete="off"  th:value="${flatocc.todt}" />
+
+                </div>                                
+</div>
+<hr/>
+<div class="form-group">
+ <button type="submit" name="add" class="btn btn-primary w-50 float-end">Update</button> 
+   </div>
+<div class="w-100 float-start mt-3">
+             <div  class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+            </div>
+ </form>
+ </div>
+ 
+</div> 
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+</body>
+</html>

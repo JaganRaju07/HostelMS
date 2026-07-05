@@ -1,0 +1,95 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:block  th:replace="admin/base :: header">
+   </th:block>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 page-header">
+                            <div class="page-pretitle">Overview</div>
+                            <h2 class="page-title">Dashboard</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="icon-big text-center">
+                                                <i class="teal fas fa-building"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="detail">
+                                                <p class="detail-subtitle">Blocks</p>
+                                                <span class="number" th:text="${blocks}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="icon-big text-center">
+                                                <i class="olive fas fa-boxes"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="detail">
+                                                <p class="detail-subtitle">Rooms</p>
+                                                <span class="number" th:text="${rooms}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="icon-big text-center">
+                                                <i class="violet fas fa-user"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="detail">
+                                                <p class="detail-subtitle">Students Staying</p>
+                                                <span class="number" th:text="${students}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+ <div class="row" th:if="${neweregister>0}">
+ 
+ <div class="col-md-12">
+   <h1><a href="/admin/registrationrequests"><span th:text="${neweregister}"></span> New Registrations pending to Accept.Click to see Details</a></a></h1>  
+ </div>
+</div>
+
+ </div>
+            </div>
+      <th:block  th:replace="admin/base :: footer">
+   </th:block>
+</body>
+
+</html>

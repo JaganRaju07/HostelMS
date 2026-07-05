@@ -1,0 +1,95 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:room  th:replace="admin/base :: header">
+   </th:room>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Visitors</h2> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="  col-md-10 m-auto   mt-3">
+                            <div class="card">
+                            <div class="card-body"> 
+<div id="print_out">
+ 
+
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Vistor</th>
+                <th>Vistor Time</th> 
+                <th>To meet</th>
+                <th>Room</th>
+                <th>Purpose</th>  
+            </tr>
+</thead>
+<tbody id="results">
+     
+</tbody>
+</table>
+</div>
+ 
+</div> 
+</div>
+</div>
+</div>
+</div>
+</div>
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="admin/base :: footer">
+ 
+   </th:block>
+   
+   
+   
+   
+   
+  <script>
+   $(function() {  
+		  loadresults(); 
+   }); 
+   var temp="<tr><td>{{visitor}}</td><td>{{visitingtime}}</td><td>{{user}}</td><td>{{room}}</td><td>{{purpose}}</td></tr>";
+   function loadresults()
+   {
+	   var form = $("#frm");
+  	    var url = form.attr('action');
+  	  $("#results").html('');
+	   $.ajax({ 
+           url: "/admin/getvisitors",  
+           method:"POST",
+	           data: form.serialize(), // serializes the form's elements.
+  			    dataType: "json",
+           success: function(data)
+           {
+        	   var strhtml="";
+        	   vrequests=data.vrequests;
+        	   for(var i=0;i<vrequests.length;i++)
+        		   {
+        	       var strhtml=temp;
+        	       strhtml=strhtml.replace("{{visitor}}",vrequests[i].visitor);
+        	       strhtml=strhtml.replace("{{visitingtime}}",vrequests[i].visitingtime);
+        	       strhtml=strhtml.replace("{{user}}",vrequests[i].user);
+        	       strhtml=strhtml.replace("{{room}}",vrequests[i].room);	
+        	       strhtml=strhtml.replace("{{purpose}}",vrequests[i].purpose);	
+        	       $("#results").append(strhtml);
+                   }
+           }
+    });	          
+   }
+   </script>
+   
+</body>
+</html>

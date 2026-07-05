@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block> 
+<div class="card card-info">
+<div class="card-heading">
+Registration  requests
+</div>
+<div class="card-body">
+ <div class="container">
+<div class="msg msg-error" role="alert" th:if="${param.error}">
+  Error while processing 
+</div> 
+ 
+ 
+<div class="msg msg-success" role="alert"  th:if="${param.success}">
+ Updated Successfully  
+</div>
+ </div>
+    
+<div id="print_out">
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Datetime</th>
+                <th>Fullname</th>   
+                <th>Email Id</th>   
+                <th>Mobile</th>   
+                <th class="nprint">Action</th>  
+            </tr>
+</thead>
+<tbody>
+<tr><th colspan="5" th:if="${#lists.size(requests)==0}">No Data Found</th></tr>
+      <tr th:each="s:${requests}"> 
+                <td th:text="${s.creationdate}"></td>
+                <td th:text="${s.fullname}"></td> 
+                <td th:text="${s.emailid}"></td>
+                <td th:text="${s.mobilenumber}"></td> 
+                 <td  class="nprint">
+                    <a class="p-2" th:href="${'/admin/registartionaction/'+s.id+'/1'}" title='Approve'><i class="fa fa-check"></i></a>
+                 <a class="p-2" th:href="${'/admin/registartionaction/'+s.id+'/0'}" title='Reject'><i class="fa fa-xmark"></i></a>
+                
+                </td>
+            </tr>
+</tbody>
+</table>
+</div>
+<button   class="btn btn-primary btn-lg float-end m-2" title="Service requests" id="print">Print </button> 
+ 
+</div> 
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+   
+   
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block> 
+<div class="card card-info">
+<div class="card-heading">
+Flats in <span th:text="${building.name}"></span>
+</div>
+<div class="card-body">
+
+<div id="print_out">
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Flat</th>
+                <th>Floor</th>
+                <th>Owner</th>
+                <th>Status</th>
+                <th class="nprint">Actions</th>
+            </tr>
+</thead>
+<tbody>
+      <tr th:each="s:${flats}"> 
+                <td th:text="${s.flatno}"></td>
+                <td th:text="${s.floor}"></td>
+                <td th:text="${s.owner}"></td>
+                <td th:text="${s.status}"></td>
+                <td  class="nprint">
+                    <a class="p-2" title='Edit'   th:href="${'/admin/editflat/'+s.id}"><i class="fa fa-pen"></i></a>           
+                     <a class="p-2" title='View'   th:href="${'/admin/viewflat/'+s.id}"><i class="fa fa-eye"></i></a>                
+                </td>
+            </tr>
+</tbody>
+</table>
+</div>
+<button   class="btn btn-primary btn-lg float-end m-2" title="Parking slots" id="print">Print </button> 
+<a   class="btn btn-primary btn-lg float-end m-2" th:href="${'/admin/addflat/'+{building.id}}" >Add </a> 
+
+</div> 
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+   
+   
+ 
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block>
+   
+ <div id="print_out">
+<div class="card card-info">
+<div class="card-heading">
+Owned Flats
+</div>
+<div class="card-body">
+   <h1 th:if="${#lists.size(oflats)==0}">No Data Found</h1>
+</div>
+</div>
+<div class="card card-info" th:each="flat:${oflats}">
+<div class="card-body">
+ <table class="table table-stripped shadow-lg  bg-secondary  " >
+ <tbody> 
+              <tr><th>Building</th><td th:text="${flat.building}"></td> </tr>
+              <tr><th>Flat No.</th><td th:text="${flat.flatno}"></td> </tr>
+              <tr><th>Floor</th><td th:text="${flat.floor==0?'Ground':flat.floor}"></td> </tr> 
+              <tr><th>Status</th> <td th:text="${flat.status}"></td> </tr> 
+              <tr><th>Bedrooms</th><td th:text="${flat.bedrooms}"></td> </tr>
+              <tr><th>Bathrooms</th><td th:text="${flat.bathrooms}"></td> </tr>
+            
+</tbody>
+ 
+</table>
+</div> 
+  </div>
+  
+  
+  <div class="card card-info" th:each="flat:${lflats}">
+  <div class="card-heading">
+Rent/Lease Flats
+</div>
+<div class="card-body">
+ 
+ <table class="table table-stripped shadow-lg bg-secondary" >
+ <tbody>
+ 
+              <tr><th>Building</th><td th:text="${flat.building}"></td> </tr>
+              <tr><th>Owner</th><td th:text="${flat.owner}"></td> </tr>
+              <tr><th>Flat No.</th><td th:text="${flat.flatno}"></td> </tr>
+              <tr><th>Floor</th><td th:text="${flat.floor==0?'Ground':flat.floor}"></td> </tr> 
+              <tr><th>Status</th> <td th:text="${flat.status}"></td> </tr> 
+              <tr><th>Bedrooms</th><td th:text="${flat.bedrooms}"></td> </tr>
+              <tr><th>Bathrooms</th><td th:text="${flat.bathrooms}"></td> </tr>
+            
+</tbody>
+ 
+</table>
+</div> 
+  </div>
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+</body>
+</html>

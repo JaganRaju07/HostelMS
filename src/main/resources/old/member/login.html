@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body style="background-image:url(/assets/img/apartment1.png)">
+  <div class="container">
+        <div class="login">
+            <div class="login__content mt-5">
+                
+                <form id="loginForm" method="POST" class="login__form">
+                    <div>
+                        <h1 class="login__title"> 
+                            <span>Online</span> Apartment Management
+                        </h1>
+
+                        <p class="login__description">
+                            Welcome! Please login to continue.
+                        </p>
+                    </div>
+
+                    <div class="login__inputs">
+                        <div>
+                            <label for="username" class="login__label">Username:</label>
+                            <input class="login__input" type="text" id="username" name="username" required>
+                        </div>
+
+                        <div>
+                            <label for="password" class="login__label">Password:</label>
+                            <div class="login__box">
+                                <input class="login__input" type="password" id="password" name="password" required>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="login__button">Login</button>
+                    </div>
+ <div  th:if="${param.error}" class="msg msg-error">Invalid Username or Password</div>
+        
+            <div th:if="${param.logout}" class="msg msg-success">You have been logged out. 
+            </div> 
+              <div class="text-center">
+          <span class="text-white">Don't have an account?</span>
+          <a href="/signup">Sign Up</a>
+        </div>
+                      </form>
+                      
+                      
+            </div>
+        </div>
+    </div>
+  
+   
+</body>
+</html>
+ 

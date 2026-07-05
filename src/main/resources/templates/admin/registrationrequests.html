@@ -1,0 +1,86 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:block  th:replace="admin/base :: header">
+   </th:block>
+   
+                  <div class="content">
+                <div class="container">
+                     
+                    <div class="row">
+                        <div class="  col-md-10 m-auto mt-3">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Registration  requests</h2>
+                        </div>
+                            <div class="card"> 
+ 
+<div class="card-body">
+ <div class="container">
+<div class="alert alert-danger" role="alert" th:if="${param.error}">
+  Error while processing. Please check records, may be duplicate entry.
+</div> 
+ 
+ 
+<div class="alert alert-success" role="alert"  th:if="${param.success}">
+ Updated Successfully  
+</div>
+ </div>
+    
+<div id="print_out">
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Datetime</th>
+                <th>Fullname</th>   
+                <th>Email Id</th>   
+                <th>Mobile</th>   
+                <th>Regno</th>   
+                <th>Course</th>   
+                <th class="nprint">Action</th>  
+            </tr>
+</thead>
+<tbody>
+<tr><th colspan="5" th:if="${#lists.size(requests)==0}">No Data Found</th></tr>
+      <tr th:each="s:${requests}"> 
+                <td th:text="${s.creationdate}"></td>
+                <td th:text="${s.fullname}"></td> 
+                <td th:text="${s.emailid}"></td>
+                <td th:text="${s.mobilenumber}"></td> 
+                <td th:text="${s.regno}"></td> 
+                <td th:text="${courses.get(s.course)}"></td> 
+                 <td  class="nprint">
+                    <a class="p-2" th:href="${'/admin/registartionaction/'+s.id+'/1'}" title='Approve'><i class="fa fa-check"></i></a>
+                 <a class="p-2" th:href="${'/admin/registartionaction/'+s.id+'/0'}" title='Reject'><i class="fa fa-xmark"></i></a>
+                
+                </td>
+            </tr>
+</tbody>
+</table>
+</div>
+<button   class="btn btn-primary btn-lg float-end m-2" title="Service requests" id="print">Print </button> 
+ 
+</div> 
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="admin/base :: footer">
+ 
+   </th:block>
+   
+   
+
+</body>
+</html>

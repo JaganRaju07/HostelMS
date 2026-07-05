@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="student/base :: head">
+     
+</head>
+<body>
+<th:block th:replace="student/base :: header">
+</th:block>
+
+         
+              <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Monthly Fees Payment Due</h2> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="  col-md-10 m-auto   mt-3">
+                            <div class="card">
+                            <div class="card-body">  
+                       
+                   <div class="form-group row">
+                       <label for="" class="col-md-2">Total Due:</label>
+                       <div class="col-md-4">
+                       <label   class="form-control amount" th:text="${balance}">0</label>
+                       </div>
+                   </div>
+                    
+                  <table id="allocationtab" class="table table-striped table-hover table-bordered " cellspacing="0" width="100%" style="background: white;padding: 0 5px;">
+
+    <thead>
+        <tr>  
+            <th>Room</th>  
+            <th>Month-Year</th>   
+            <th>Total Payable</th>   
+          </tr>
+    </thead>
+    
+    <tbody>
+      <tr th:each="f:${fees}">
+        <td th:text="${f.room}"></td>
+        <td th:text="${f.monthyear}"></td>
+        <td class="amount" th:text="${f.totalfees}"></td>
+      </tr>
+       <tr th:if="${fees.size()==0}">
+        <td colspan=3>No Records Found</td>
+        </tr>
+    </tbody>
+     
+    </table>
+    </div>
+                   
+                             </div>
+ 
+            </div>
+        </div> 
+</div>
+</div>
+        
+     
+ 
+     <!-- CONTENT-WRAPPER SECTION END-->
+          <th:block   th:replace="student/base :: footer">
+ 
+   </th:block>
+    
+</body>
+</html>

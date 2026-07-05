@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head th:fragment="head">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="/assets/css/font-awesome.min.css"> 
+    <link rel="stylesheet" href="/assets/css/style.css"> 
+ 
+ 
+    <script src="/assets/js/bootstrap.bundle.js"></script>
+    <script src="/assets/js/jquery-3.7.1.min.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <title>Online Apartment Management</title>
+  </head>
+  <body>
+  <th:block th:fragment="header">
+    
+<div class="sidebar">
+    <img src="/assets/img/logo1.png" class="logo">
+    <i class="fa fa-chevron-left menu-icon"></i>
+    <th:block sec:authorize="hasAuthority('ADMIN')"  th:with="path=${#ctx.springRequestContext.requestUri}">
+    <ul class="sidenav">
+        <li class="active"><i class="fa fa-home"></i><a href="/admin/dashboard"> Dashboard
+            <span class="span1"><i class="fa fa-angle-right"></i></span>
+        </a>
+        </li>
+        
+        <p class="app">Admin Control</p>
+         <li><i class="fa fa-user"></i><a href="/admin/buildings">Buildings</a></li>
+        <li><i class="fa fa-user"></i><a href="/admin/parkings">Parkingslots</a></li>
+        <li><i class="fa fa-user"></i><a href="/admin/services">Services</a></li>  
+         <li><i class="fa fa-user"></i><a href="/admin/registrationrequests">Registration Requests</a></li>
+         <li><i class="fa fa-user"></i><a href="/admin/complaints">Complaints</a></li> 
+           <li><i class="fa fa-user"></i><a href="/admin/servicerequests">Service requests</a></li> 
+        <li><i class="fa fa-user"></i><a href="/admin/members">Owners/Tenants</a></li>  
+           <li><i class="fa fa-user"></i><a href="/admin/visitors">Visitors</a></li> 
+    
+        <li><i class="fa fa-user"></i><a href="/admin/changepassword">Change Password</a></li>
+        <li><i class="fa fa-user"></i><a href="/logout"> Logout</a></li>
+    </ul>
+    </th:block>
+    
+     <th:block sec:authorize="hasAuthority('MEMBER')"  th:with="path=${#ctx.springRequestContext.requestUri}">
+    <ul class="sidenav">
+        <li class="active"><i class="fa fa-home"></i><a href="/member/dashboard"> Dashboard
+            <span class="span1"><i class="fa fa-angle-right"></i></span>
+        </a>
+        </li>
+        
+        <p class="app">Control</p>
+         <li><i class="fa fa-user"></i><a href="/member/flats">Flat(s)</a></li> 
+            <li><i class="fa fa-user"></i><a href="/member/parkings">Parkingslot(s)</a></li>
+     
+           <li><i class="fa fa-user"></i><a href="/member/complaints">Complaints</a></li> 
+           <li><i class="fa fa-user"></i><a href="/member/servicerequests">Service requests</a></li> 
+           <li><i class="fa fa-user"></i><a href="/member/visitors">Visitors</a></li> 
+        <li><i class="fa fa-user"></i><a href="/member/changepassword">Change Password</a></li>
+        <li><i class="fa fa-user"></i><a href="/member/myprofile">Profile</a></li> 
+          
+        <li><i class="fa fa-user"></i><a href="/logout"> Logout</a></li>
+    </ul>
+    </th:block>
+    
+</div>
+  
+<div class="main">
+    <div class="main-top"> 
+  </th:block>
+  
+  
+     <th:block  th:fragment="footer"> 
+     </div>
+ </div>
+    </th:block>
+  </body>
+</html>

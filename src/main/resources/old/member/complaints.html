@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block> 
+<div class="card card-info">
+<div class="card-heading">
+Complaints
+</div>
+<div class="card-body">
+<div id="print_out">
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Datetime</th>
+                <th>Title</th> 
+                <th>Status</th> 
+                <th class="nprint">Actions</th>
+            </tr>
+</thead>
+<tbody>
+      <tr th:each="s:${complaints}"> 
+                <td th:text="${s.creationdate}"></td>
+                <td th:text="${s.ctitle}"></td>
+                <td th:text="${T(com.project.ams.Complaintstatus).getName(s.status)}"></td>
+                <td  class="nprint">
+                    <a class="p-2" href="javascript:void(0)" title='Comments'   th:data-id="${s.id}" onclick="loadedit(this)"><i class="fa fa-comment"></i></a>
+                 
+                </td>
+            </tr>
+</tbody>
+</table>
+</div>
+<button   class="btn btn-primary btn-lg float-end m-2" title="Complaints" id="print">Print </button> 
+<button   class="btn btn-primary btn-lg float-end m-2" data-bs-toggle="modal" data-bs-target="#add_model">Add </button> 
+
+</div> 
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+   
+   
+   
+   
+   
+   <div class="modal fade" id="add_model" data-user_id="0" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="user_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content">
+    
+        <form class="ajaxfrm" id="addform"    data-reload=1 data-reset=1 action="/member/addcomplaintdb" > 
+      <div class="modal-header">
+        <h5 class="modal-title white-text" id="user_modal_title">Add Complaint</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          
+          <div class="form-group"> 
+                <label for="user_password">Title</label>
+                <input type="text" class="form-control" name="title" required />  
+          </div>
+          <div class="form-group"> 
+                <label for="user_password">Description</label>
+                
+                <textarea   class="form-control" name="desc" required></textarea>    
+          </div>
+   <div class="form-group">
+<label>Flat</label>
+ <select class="form-select" name="flat" required>  
+                   <option th:each="i : ${flats}" th:value="${i.id}" th:text="${i.name}"></option>
+                </select>
+                 </div>
+      </div>
+      <div class="modal-footer justify-content-start">      
+        <div class="col-8">
+           <div    class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-success w-100">Save</button>
+        </div>
+      </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+  
+  
+   
+   <div class="modal fade" id="edit_model" data-user_id="0" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="user_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content"> 
+        <form class="ajaxfrm" id="editform"    data-reload=1 data-reset=1 action="/member/addcomplaintcommentdb" > 
+         <input type="hidden" name="id" value="">
+      <div class="modal-header">
+        <h5 class="modal-title white-text" id="user_modal_title">View Complaint</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body row">
+         <div class="col-md-4 border-end">
+              <table id="editform" class="commentview">
+                <thead>
+                   <tr><th>Title</th><td id="title"></td></tr>
+                   <tr><th>Description</th><td id="desc"></td></tr>
+                   <tr><th>Flat</th><td id="flat"></td></tr>
+                   <tr><th>Status</th><td id="status"></td></tr>
+                   <tr><th>Date time</th><td id="dtime"></td></tr>
+                </thead>
+              </table>
+         </div>
+         <div class="col-md-8" style="height:250px;overflow:scroll;">
+            <h5 class="text-decoration-underline">Comments</h5>
+             <div class="row d-flex">
+  <div class="col-md-12 comments">
+             
+             </div>
+             </div>
+         </div> 
+               <div class="col-md-12 commentinput">
+         Your Comments:
+          <textarea class="form-control" name="comment"></textarea>
+            </div>
+      </div>
+      <div class="modal-footer justify-content-start">      
+        <div class="col-8">
+           <div    class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-success w-100">Submit</button>
+        </div>
+      </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+  
+   
+   
+    <script>
+    var ctempt='<div class="card mb-4 text-black shadow">     <div class="card-body">         <p>{{comment}}</p>             <div class="d-flex justify-content-end">                 <p class="small mb-0 ms-2 text-success">-{{user}},{{dtime}}</p>             </div>     </div> </div>';
+     function loadedit(btn)
+     {
+        var id=$(btn).attr("data-id");
+        $.ajax({ 
+	           url: "/member/getcomplaint/"+id, 
+			    dataType: "json",
+	           success: function(data)
+	           {
+	        	   complaint=data.complaint; 
+	        	   comments=data.comments;
+	        	    $("#editform [name=id]").val(complaint.id); 
+	        	    $("#editform #title").html(complaint.ctitle); 
+	        	    $("#editform #desc").html(complaint.cdescription); 
+	        	    $("#editform #flat").html(data.flat); 
+	        	    $("#editform #status").html(data.sstatus); 
+	        	    $("#editform #dtime").html(data.creationdate); 
+	        	    $(".comments").html(''); 
+	        	    comments.forEach(function myFunction(item, index, arr) {
+	        	       var ct=ctempt.replace("{{user}}",item.user); 
+	        	       ct=ct.replace("{{comment}}",item.comment); 
+	        	       ct=ct.replace("{{dtime}}",item.creationdate);
+	        	        $(".comments").append(ct); 
+	        	    });
+	        	    if(data.status==2)
+	        	    {
+	        	    	$('#editform   [type="submit"]').addClass('d-none'); 
+	        	    	$('.commentinput').addClass('d-none');
+	        	    }
+	        	    else
+	        	    {
+	        	    	$('#editform   [type="submit"]').removeClass('d-none'); 
+	        	    	$('.commentinput').removeClass('d-none');
+	        	    }
+	        	    
+	        	    $("#edit_model").modal('show');
+	        	    
+	           }
+        });	          
+     }
+     
+      
+  </script>
+  
+  
+</body>
+</html>

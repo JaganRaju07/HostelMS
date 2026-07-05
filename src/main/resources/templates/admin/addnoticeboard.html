@@ -1,0 +1,96 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:block  th:replace="admin/base :: header">
+   </th:block>
+   
+                  <div class="content">
+                <div class="container">
+                     
+                    <div class="row">
+                        <div class="  col-md-10 m-auto mt-3">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Add Notice</h2>
+                        </div>
+                            <div class="card">
+                                <div class="content">
+   <form action="/admin/noticeboard" class="ajaxfrm" method="post" id="frmadd"  >
+       <input type="hidden" name="action"  value="add"> 
+            <!-- Name input-->
+                             
+                    <div class="form-group row">
+                        <label for="title" class="col-md-2"> Subject</label>
+                        <div class=" col-md-10">
+                        <input type="text" name="subject" class="form-control" id="subject"  placeholder="Enter  subject" required>
+                    </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="title" class="col-md-2"> Message</label>
+                        <div class=" col-md-10">
+                          <textarea class="form-control widgEditor" id="message" name="message" required></textarea>
+                    </div>
+                    </div>   
+                    
+        <div class="alert alert-danger" style="display:none"></div>
+        <div class="alert alert-success"  style="display:none"></div>
+       <div class="form-group">
+        <button type="submit" class="btn btn-primary w-50 float-end">Add</button> 
+        </div>
+       </form>
+                            </div>
+        </div> 
+        </div>
+        </div>
+        </div>
+        </div>
+     <!-- CONTENT-WRAPPER SECTION END-->
+   <th:block   th:replace="admin/base :: footer">
+ 
+   </th:block> 
+   <script>
+   $( function() {
+	  	  $("#frmadd").off( "submit");
+	  	   $("#frmadd").submit(function(e) {
+	  		 widgItems.forEach(function(item){
+	 			item.updateWidgInput();
+	 		}) ;
+	  	      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+	  	      var form = $(this);
+	  	      var url = form.attr('action');
+	  	      
+	  	      $("#frmadd .alert").hide();
+		      var data=new FormData(this);//form.serialize();  
+	  	      $.ajax({
+	  	             type: "POST",
+	  	             url: $(this).attr("action"),  
+	  	             data:data , // serializes the form's elements.
+	  	   		    dataType: "json",
+	     		    processData: false,
+	                contentType:false, 
+	  	             success: function(data)
+	  	             {
+	  	   		      if(data.success)
+	  	                  { $("#frmadd .alert.alert-success").html(data.message).show(); document.location.href="/admin/noticeboard"} // show response from the php script.
+	  	   			  else
+	  	   				  {
+	  	   			     $("#frmadd .alert.alert-danger").html(data.message).show(); // show response from the php script.  
+	  	   				  }
+	  	   		  
+	  	   		      }
+	  	           });
+	  	   		     }); 
+	  
+   });
+   
+   
+   </script>
+   
+</body>
+</html>

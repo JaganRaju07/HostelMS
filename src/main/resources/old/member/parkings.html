@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block>
+   
+ <div id="print_out">
+<div class="card card-info">
+<div class="card-heading">
+Parking Slot(s) Allocated
+</div>
+<div class="card-body">
+   <h1 th:if="${#lists.size(slots)==0}">No Data Found</h1>
+</div>
+</div>
+<div class="card card-info" th:each="p:${slots}">
+<div class="card-body">
+ <table class="table table-stripped shadow-lg bg-warning" >
+ <tbody>
+                <tr><th>Bulding</th><td th:text="${p.building}"></td></tr>  
+                <tr><th>Slot</th><td th:text="${p.slot}"></td></tr>  
+            
+</tbody>
+ 
+</table>
+</div> 
+  </div>
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+</body>
+</html>

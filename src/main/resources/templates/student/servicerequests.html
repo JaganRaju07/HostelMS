@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="student/base :: head">
+     
+</head>
+<body>
+<th:block th:replace="student/base :: header">
+</th:block> 
+<div class="card card-info">
+<div class="card-heading">
+Service requests
+</div>
+<div class="card-body">
+<div id="print_out">
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Datetime</th>
+                <th>Service</th>  
+                <th>Flat</th> 
+                <th>Fee(in Rs.)</th>  
+                <th>Status</th>   
+                <th>Payment</th>  
+            </tr>
+</thead>
+<tbody>
+      <tr th:each="s:${servicerequests}"> 
+                <td th:text="${s.dtime}"></td>
+                <td th:text="${s.service}"></td>
+                <td th:text="${s.flat}"></td>
+                <td th:text="${s.amount}"></td>
+                <td th:text="${s.status}"></td>
+                <td th:text="${s.payment}"></td>
+                 
+            </tr>
+</tbody>
+</table>
+</div>
+<button   class="btn btn-primary btn-lg float-end m-2" title="Service requests" id="print">Print </button> 
+<button   class="btn btn-primary btn-lg float-end m-2" data-bs-toggle="modal" data-bs-target="#add_model">Add </button> 
+
+</div> 
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="student/base :: footer">
+ 
+   </th:block>
+   
+   
+   
+   
+   
+   <div class="modal fade" id="add_model" data-user_id="0" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="user_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content">
+    
+        <form class="ajaxfrm" id="addform"    data-reload=1 data-reset=1 action="/member/addservicerequestdb" > 
+      <div class="modal-header">
+        <h5 class="modal-title white-text" id="user_modal_title">Add Service request</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+           <div class="form-group">
+<label>Service</label>
+ <select class="form-select" name="service" required>  
+                   <option th:each="i : ${services}" th:value="${i.id}" th:text="${i.name+' - Rs.'+i.fee}"></option>
+                </select>
+                 </div>
+           
+   <div class="form-group">
+<label>Flat</label>
+ <select class="form-select" name="flat" required>  
+                   <option th:each="i : ${flats}" th:value="${i.id}" th:text="${i.name}"></option>
+                </select>
+                 </div>
+                  <div class="form-group"> 
+                <label for="user_password">Description</label>
+                <textarea   class="form-control" name="desc" required></textarea>  
+          </div>
+      </div>
+      <div class="modal-footer justify-content-start">      
+        <div class="col-8">
+           <div    class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-success w-100">Save</button>
+        </div>
+      </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+  
+</body>
+</html>

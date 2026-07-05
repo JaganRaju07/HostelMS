@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block> 
+<div class="card card-info">
+<div class="card-heading">
+Building
+</div>
+<div class="card-body">
+<div id="print_out">
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Building Name</th>  
+                <th  class="nprint">Flats</th> 
+                <th class="nprint">Actions</th>
+            </tr>
+</thead>
+<tbody>
+      <tr th:each="s:${buildings}"> 
+                <td th:text="${s.name}"></td> 
+                <td  class="nprint"><a th:href="${'/admin/flats/'+s.id}">View</a></td> 
+                <td  class="nprint">
+                    <a class="p-2" href="javascript:void(0)" title='Edit'   th:data-id="${s.id}" onclick="loadedit(this)"><i class="fa fa-pen"></i></a>
+                    <a class="p-2" href="javascript:void(0)" title='Delete' th:data-id="${s.id}" onclick="loaddelete(this)" ><i class="fa fa-times"></i></a>
+               
+                </td>
+            </tr>
+</tbody>
+</table>
+</div>
+<button   class="btn btn-primary btn-lg float-end m-2" title="Buildings" id="print">Print </button> 
+<button   class="btn btn-primary btn-lg float-end m-2" data-bs-toggle="modal" data-bs-target="#add_model">Add </button> 
+
+</div> 
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+   
+   
+   
+   
+   
+   <div class="modal fade" id="add_model" data-user_id="0" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="user_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content">
+    
+        <form class="ajaxfrm" id="addform"    data-reload=1 data-reset=1 action="/admin/addbuildingdb" > 
+      <div class="modal-header">
+        <h5 class="modal-title white-text" id="user_modal_title">Add Building</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          
+          <div class="form-group"> 
+                <label for="user_password">Name</label>
+                <input type="text" class="form-control" name="name" required />  
+          </div>
+    
+      </div>
+      <div class="modal-footer justify-content-start">      
+        <div class="col-8">
+           <div    class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-success w-100">Save</button>
+        </div>
+      </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+  
+  
+  
+    
+   
+   <div class="modal fade" id="edit_model" data-user_id="0" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="user_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content">
+    
+        <form class="ajaxfrm" data-reload=1    data-reset=0 id="editform" action="/admin/updatebuildingdb" > 
+        <input type="hidden" name="id" value="">
+      <div class="modal-header">
+        <h5 class="modal-title white-text" id="user_modal_title">Edit Building</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          
+          <div class="form-group"> 
+                <label for="user_password">Name</label>
+                <input type="text" class="form-control" name="name" required />  
+          </div>
+     
+      </div>
+      <div class="modal-footer justify-content-start">      
+        <div class="col-8">
+           <div    class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-success w-100">Update</button>
+        </div>
+      </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+  
+  
+  
+  
+     
+   
+   <div class="modal fade" id="delete_model" data-user_id="0" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="user_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content">
+    
+        <form class="ajaxfrm"  data-reload=1  data-reset=0 id="deleteform" action="/admin/deletebuildingdb" >  
+        <input type="hidden" name="id" value="">
+      <div class="modal-header">
+        <h5 class="modal-title white-text" id="user_modal_title">Delete Building</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+           <h3>Are you sure to delete?
+           </h3>                   
+      </div>
+      <div class="modal-footer justify-content-start">      
+        <div class="col-8">
+           <div    class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-success w-100">Yes</button>
+        </div>
+      </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+  
+  <script>
+     function loadedit(btn)
+     {
+        var id=$(btn).attr("data-id");
+        $.ajax({ 
+	           url: "/admin/getbuilding/"+id, 
+			    dataType: "json",
+	           success: function(data)
+	           {
+	        	    data=data.data;
+	        	    $("#editform [name=id]").val(data.id);
+	        	    $("#editform [name=name]").val(data.name); 
+	        	    $("#edit_model").modal('show');
+	           }
+        });	          
+     }
+     
+     function loaddelete(btn)
+     {
+                    var id=$(btn).attr("data-id"); 
+	        	    $("#deleteform [name=id]").val( id); 
+	        	    $("#delete_model").modal('show'); 
+     }
+  </script>
+  
+  
+</body>
+</html>

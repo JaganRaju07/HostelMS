@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block>
+ 
+
+   
+ 
+<div class="card card-info">
+<div class="card-heading">
+Flat of <span th:text="${building.name}"></span>
+</div>
+<div class="card-body"> 
+ <div id="print_out">
+ <table class="table table-stripped bg-transparent">
+ <thead>
+              <tr><th>Owner</th><td th:text="${owner}"></td> </tr>
+              <tr><th>Flat No.</th><td th:text="${flat.flatno}"></td> </tr>
+              <tr><th>Floor</th><td th:text="${flat.floor==0?'Ground':flat.floor}"></td> </tr> 
+              <tr><th>Status</th> <td th:text="${status}"></td> </tr> 
+              <tr><th>Bedrooms</th><td th:text="${flat.bedrooms}"></td> </tr>
+              <tr><th>Bathrooms</th><td th:text="${flat.bathrooms}"></td> </tr>
+</thead> 
+</table>
+ </div>
+ <button   class="btn btn-primary btn-lg float-end m-2" th:title="${'Flat of '+building.name}" id="print">Print </button> 
+ 
+</div> 
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+</body>
+</html>

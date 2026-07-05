@@ -1,0 +1,177 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="student/base :: head">
+     
+</head>
+
+<body>
+   <th:block  th:replace="student/base :: header">
+   </th:block>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Visitors</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="  col-md-10 m-auto   mt-3">
+                            <div class="card">
+                            <div class="card-body"> 
+                             <button   class="btn btn-primary   float-end m-2" data-bs-toggle="modal" data-bs-target="#add_model">Add </button> 
+                            
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Vistor</th>
+                <th>Vistor Time</th> 
+                <th>room</th>
+                <th>Purpose</th> 
+                <th class="nprint">Actions</th>
+            </tr>
+</thead>
+<tbody>
+      <tr th:each="s:${vrequests}"> 
+                <td th:text="${s.visitor}"></td>
+                <td th:text="${s.visitingtime}"></td>
+                <td th:text="${s.room}"></td>
+                <td th:text="${s.purpose}"></td> 
+                <td  class="nprint"> 
+ 
+
+                                            <a  class='dialoganchor' href='#' th:data-href="${'/student/removevisitorentry/'+s.id}" onclick="return confirm('Are you sure you want to remove?');"><button class="btn btn-primary">Done</button> 
+                                          </a>
+                                           
+                                            </td>    
+            </tr>
+</tbody>
+</table>
+</div>
+
+</div> 
+</div>
+</div>
+</div>
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="student/base :: footer">
+ 
+   </th:block>
+   
+   
+   
+   
+   
+   <div class="modal fade" id="add_model" data-user_id="0" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="user_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content">
+    
+        <form class="ajaxfrm" id="addform"    data-reload=1 data-reset=1 action="/student/addvisitordb" > 
+      <div class="modal-header">
+        <h5 class="modal-title white-text" id="user_modal_title">Add Visitor</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+    
+      </div>
+      <div class="modal-body">
+
+          
+          <div class="form-group"> 
+                <label for="user_password">Visitor Name</label>
+                <input type="text" class="form-control" name="name" required />  
+          </div>
+          <div class="form-group"> 
+                <label for="user_password">Purpose </label>
+                <input type="text" class="form-control" name="purpose" required />   
+          </div>
+   <div class="form-group">
+<label>room</label>
+ <select class="form-select" name="room" required>  
+                   <option th:each="i : ${rooms}" th:value="${i.id}" th:text="${i.name}"></option>
+                </select>
+                 </div>
+                 <div class="form-group"> 
+                <label for="user_password">Visiting Time</label>
+                <label for="user_password">From</label>
+                <input type="datetime-local" class="form-control" name="fromtime" required />   To 
+                
+                <input type="datetime-local" class="form-control" name="totime" required />   
+          </div>
+      </div>
+      <div class="modal-footer justify-content-start">      
+        <div class="col-8">
+           <div    class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-success w-100">Save</button>
+        </div>
+      </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+  <script>
+   $(function() { 
+	   var today = new Date().toISOString().slice(0, 16);
+       $("[type=datetime-local]").attr("min",today);
+	     $(".dialoganchor").off( "click");
+	 	$(".dialoganchor").click(function(e) { 
+	 	    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+	 	    var ele = $(this);
+	 	    var url = ele.attr('data-href');
+	 	     if(!url) return;
+	 	    $.ajax({
+	 	           type: "POST",
+	 	           url: url,  
+	 			    dataType: "json",
+	 	           success: function(data)
+	 	           {
+	 			       alert(data.html);
+	 	                document.location.reload(); 
+	 	           }
+	 	         });
+
+	 	}); 
+	 	
+	 	
+	 	$("#addform").off( "submit");
+  	   $("#addform").submit(function(e) {
+
+  	      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+  	      var form = $(this);
+  	      var url = form.attr('action');
+  	      
+  	      $("#frmadd .alert").hide();
+  	      var data=form.serialize(); 
+  	      $.ajax({
+  	             type: "POST",
+  	             url: $(this).attr("action"),  
+  	             data:data , // serializes the form's elements.
+  	   		    dataType: "json",
+  	             success: function(data)
+  	             {
+  	   		      if(data.success)
+  	                  { $("#frmadd .alert.alert-success").html(data.html).show();  document.location.reload();} // show response from the php script.
+  	   			  else
+  	   				  {
+  	   			     $("#frmadd .alert.alert-danger").html(data.html).show(); // show response from the php script.  
+  	   				  }
+  	   		  
+  	   		      }
+  	           });
+  	   		     }); 
+   }); 
+   </script>
+   
+</body>
+</html>

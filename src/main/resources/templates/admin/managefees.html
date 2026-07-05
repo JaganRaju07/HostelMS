@@ -1,0 +1,250 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:room  th:replace="admin/base :: header">
+   </th:room>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Monthly Fees Payment</h2> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="  col-md-10 m-auto   mt-3">
+                            <div class="card">
+                            <div class="card-body"> 
+  
+                   <div class="form-group row">
+                       <label for="" class="col-md-2">For Month-Year:</label>
+                       <div class="col-md-4"> 
+                       <input type="month" name="monthyear" id="monthyear" class="form-control">
+                       </div>
+                       
+                       <div class="col-md-6"> 
+<button   type="button" class="btn btn-primary col-md-4" onclick="fetch()">Fetch </button> 
+                   </div>
+                      
+                      </div>
+                      
+                      <div class="form-group row">
+                       <label for="" class="col-md-2">Total Fees:</label>
+                       <div class="col-md-4">
+                       <label   class="form-control amount" id="totalfees">0</label>
+                       </div>
+                   </div>
+                      
+                   <div class="form-group row">
+                       <label for="" class="col-md-2">Total Paid:</label>
+                       <div class="col-md-4">
+                       <label   class="form-control amount" id="totalpaid">0</label>
+                       </div>
+                   </div>    
+                   <div class="form-group row">
+                       <label for="" class="col-md-2">Total Balance:</label>
+                       <div class="col-md-4">
+                       <label   class="form-control amount" id="totalbalance">0</label>
+                       </div>
+                   </div>
+                    
+                  <table id="allocationtab" class="table table-striped table-hover table-bordered " cellspacing="0" width="100%" style="background: white;padding: 0 5px;">
+
+    <thead>
+        <tr> 
+            <th>Student</th>
+            <th>Room</th>  
+            <th>Total Payable</th>  
+            <th>PaidAt</th>  
+            <th>PaidBy</th>  
+            <th>Action</th>  
+          </tr>
+    </thead>
+    
+    <tbody>
+      
+      
+    </tbody>
+     
+    </table>
+    </div>
+                   
+                             </div>
+ 
+            </div>
+        </div> 
+</div>
+</div>
+
+ 
+
+<th:block  th:replace="admin/base :: footer">
+</th:block>
+
+<div class="modal fade" id="editpopupModal"   aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pay</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+      </div>
+       <form action="/admin/feespaid" method="post" id="frmedit"> 
+       <input type="hidden" name="id"  >
+      <div class="modal-body">        
+            <!-- Name input-->
+                           <!-- Name input-->
+                            <div class="form-group">
+                             <label for="name">Student</label> 
+                                 <label id="student" class="form-select" required>
+                                 </label>
+                            </div>
+                            <div class="form-group">
+                             <label for="room">Room</label> 
+                               <input id="room" name="room"  class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                             <label for="totalfees">Total Fees</label> 
+                               <input id="totalfees" name="totalfees"  class="form-control" readonly>
+                            </div>
+   <div class="form-group">
+                        <label for=" " >Paid By</label> 
+                          <select class="form-select" name="paidby" required>
+                            <option    value="Cash">Cash</option> 
+                            <option    value="Cheque">Cheque</option> 
+                            <option    value="UPI">UPI</option> 
+                            <option    value="Debit/Credit Card">Debit/Credit Card</option> 
+                        </select> 
+                      </div>      
+        <div class="alert alert-danger" style="display:none"></div>
+        <div class="alert alert-success"  style="display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Paid</button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
+
+    <script>
+ (function(){
+	 var dtToday = new Date();
+	 dtToday = new Date(dtToday.setMonth(dtToday.getMonth() - 1));
+	 
+	    var month = dtToday.getMonth()+1; 
+	    var year = dtToday.getFullYear();
+	    if(month < 10)
+	        month = '0' + month.toString();
+	    
+
+	    var minDate= year + '-' + month;
+
+	    $('[type=month]').attr('max', minDate); 
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    $("#frmedit").off( "submit");
+		   $("#frmedit").submit(function(e) {
+			 widgItems.forEach(function(item){
+				item.updateWidgInput();
+			}) ;
+		      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+		      var form = $(this);
+		      var url = form.attr('action');
+		      
+		      $("#frmedit .alert").hide();
+		      var data=new FormData(this);//form.serialize();  
+		      $.ajax({
+		             type: "POST",
+		             url: $(this).attr("action"),  
+		             data:data , // serializes the form's elements.
+		   		    dataType: "json",
+	   		    processData: false,
+	              contentType:false, 
+		             success: function(data)
+		             {
+		   		      if(data.success)
+		                  { $("#frmedit .alert.alert-success").html(data.message).show(); fetch();  jQuery('#editpopupModal').modal('hide');} // show response from the php script.
+		   			  else
+		   				  {
+		   			     $("#frmedit .alert.alert-danger").html(data.message).show(); // show response from the php script.  
+		   				  }
+		   		  
+		   		      }
+		           });
+		   		     }); 
+ })();
+    
+    var paydata=[];
+    function fetch()
+    {
+    	
+    	 data={monthyear:$("#monthyear").val()} ; 
+         $.ajax({
+                type: "POST",
+                url: "/admin/fetchfees",  
+                data:data , // serializes the form's elements.
+      		    dataType: "json",
+                success: function(data)
+                {
+                	var strhtml="";
+                	data=data.data;
+                	paydata=data;
+                	var totalfees=0;
+                	var totalpaid=0;
+                	var totalbalance=0;
+                	for(var i=0;i<data.length;i++)
+      		        {
+                		strhtml+="<tr>";
+                		strhtml+="<td>"+data[i].student+"</td>";
+                		strhtml+="<td>"+data[i].room+"</td>"; 
+                		strhtml+="<td class='amount'>"+(data[i].totalfees)+"</td>";
+                		strhtml+="<td>"+data[i].paiddate+"</td>"; 
+                		strhtml+="<td>"+data[i].paidby+"</td>"; 
+                		if(data[i].paid==0) 
+                    		strhtml+="<td><a  href='#' onclick='payfees("+i+")' class='btn btn-primary'>Pay</a></td>"; 
+                    	 else
+                		    strhtml+="<td></td>"; 
+                		totalfees+=data[i].totalfees;
+                		totalpaid+=data[i].paid==1?data[i].totalfees:0;
+                		totalbalance+=data[i].paid==0?data[i].totalfees:0;
+                		
+                		strhtml+="</tr>";
+      		        }
+                	$("#allocationtab tbody").html(strhtml);
+                	$("#totalfees").html(totalfees);
+                	$("#totalpaid").html(totalpaid);
+                	$("#totalbalance").html(totalbalance);
+      		      }
+              });
+
+       
+    }
+    
+    function payfees(index)
+    { 
+      		           $("#frmedit [name=id]").val(paydata[index].id);
+         		       $("#frmedit [id=student]").html(paydata[index].student);
+
+         		        $("#frmedit [name=room]").val(paydata[index].room);
+         		        $("#frmedit [name=totalfees]").val(paydata[index].totalfees);
+      		            $("#frmedit .alert").hide();
+      		  	        jQuery('#editpopupModal').modal('show');
+      		        	 
+    }
+  </script>
+</body>
+</html>

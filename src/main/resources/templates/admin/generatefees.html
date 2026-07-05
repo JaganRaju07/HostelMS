@@ -1,0 +1,146 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:room  th:replace="admin/base :: header">
+   </th:room>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Monthly Fees Generator</h2> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="  col-md-10 m-auto   mt-3">
+                            <div class="card">
+                            <div class="card-body"> 
+  
+                   <div class="form-group row">
+                       <label for="" class="col-md-2">For Month-Year:</label>
+                       <div class="col-md-4"> 
+                       <input type="month" name="monthyear" id="monthyear" class="form-control">
+                       </div>
+                       
+                       <div class="col-md-6"> 
+<button   type="button" class="btn btn-primary col-md-4" onclick="generate()">Generate </button> 
+                   </div>
+                      
+                      </div>
+                    
+                  <table id="allocationtab" class="table table-striped table-hover table-bordered " cellspacing="0" width="100%" style="background: white;padding: 0 5px;">
+
+    <thead>
+        <tr> 
+            <th>Student</th>
+            <th>Room</th> 
+            <th>Days</th> 
+            <th>Monthly Rent</th>  
+            <th>Mess</th>  
+            <th>Other Charges</th>  
+            <th>Total</th>  
+          </tr>
+    </thead>
+    
+    <tbody>
+      
+      
+    </tbody>
+     
+    </table>
+    </div>
+                   
+                             </div>
+ 
+            </div>
+        </div> 
+</div>
+</div>
+
+ 
+
+<th:block  th:replace="admin/base :: footer">
+</th:block>
+
+<script>
+(function() {
+    var dtToday = new Date();
+
+    var month = dtToday.getMonth() + 1; // getMonth() returns 0-11
+    var year = dtToday.getFullYear();
+
+    // Format month to two digits
+    if (month < 10)
+        month = '0' + month.toString();
+
+    var currentMonthYear = year + '-' + month;
+
+    // Set the default value and max to current month only
+    var monthInput = document.getElementById('monthyear');
+    if (monthInput) {
+        monthInput.setAttribute('max', currentMonthYear);
+        monthInput.setAttribute('min', currentMonthYear);
+        monthInput.value = currentMonthYear;
+    }
+})();
+
+function generate() {
+    var selectedMonthYear = document.getElementById('monthyear').value;
+
+    var dtToday = new Date();
+    var month = dtToday.getMonth() + 1;
+    var year = dtToday.getFullYear();
+    if (month < 10)
+        month = '0' + month.toString();
+    var currentMonthYear = year + '-' + month;
+
+    // Check if selected month is future
+    if (selectedMonthYear > currentMonthYear) {
+        alert('Invalid date and time, please select proper date.');
+        return;
+    }
+
+    var data = { monthyear: $("#monthyear").val() };
+    $.ajax({
+        type: "POST",
+        url: "/admin/newgeneratefees",
+        data: data,
+        dataType: "json",
+        success: function(response) {
+            var strhtml = "";
+            var data = response.data;
+
+            // Check if data is empty or null
+            if (!data || data.length === 0) {
+                alert('No data for the selected month.');
+                $("#allocationtab tbody").html(""); // clear old table
+                return;
+            }
+
+            // Populate table if data exists
+            for (var i = 0; i < data.length; i++) {
+                strhtml += "<tr>";
+                strhtml += "<td>" + data[i].student + "</td>";
+                strhtml += "<td>" + data[i].room + "</td>";
+                strhtml += "<td>" + data[i].days + "</td>";
+                strhtml += "<td class='amount'>" + data[i].monthlyrent + "</td>";
+                strhtml += "<td class='amount'>" + data[i].mess + "</td>";
+                strhtml += "<td class='amount'>" + data[i].other + "</td>";
+                strhtml += "<td class='amount'>" + (data[i].monthlyrent + data[i].mess + data[i].other) + "</td>";
+                strhtml += "</tr>";
+            }
+            $("#allocationtab tbody").html(strhtml);
+        },
+        error: function() {
+            alert('Something went wrong while fetching data.');
+        }
+    });
+}
+</script>
+</body>
+</html>

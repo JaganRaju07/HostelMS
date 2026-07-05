@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body style="background-image:url(/assets/img/apartment1.png)">
+  <div class="container">
+        <div class="register">
+            <div class="login__content mt-5">
+                
+                <form id="signup" method="POST" class="login__form" action="/registerdb">
+                    <div>
+                        <h1 class="login__title"> 
+                            <span>Online</span> Apartment Management
+                        </h1>
+
+                        <p class="login__description">
+                           Account Register
+                        </p>
+                    </div>
+
+                    <div class="login__inputs">
+                        <div>
+                            <label for="username" class="login__label">Emailid:</label>
+                            <input class="login__input"  onBlur="checkAvailability()" type="email" id="emailid" name="emailid" required>
+                              <span id="user-availability-status" style="font-size:12px;width:100%;"></span> 
+                        </div> 
+                        
+                         <div>
+                            <label for="fullname" class="login__label">Full Name:</label>
+                            <input class="login__input" type="text" id="fullname" name="fullname" required>
+                        </div>
+                          <div>
+                            <label for="mobileno" class="login__label">Mobile:</label>
+                            <input class="login__input"   maxlength="10"  minlength="10"  type="text" id="mobileno" name="mobileno" required>
+                        </div>
+                          <div>
+                            <label for="password" class="login__label">Password:</label>
+                            <div class="login__box">
+                                <input class="login__input" type="password" id="password" name="password" required>
+                                </div>
+                        </div>
+                        <div>
+                            <label for="confirmpassword" class="login__label">Confirm Password:</label>
+                            <div class="login__box">
+                                <input class="login__input" type="password" id="confirmpassword" name="confirmpassword" required>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" id="submit" class="login__button">Register</button>
+                    </div> 
+            <div   class="msg msg-success" style="display:none;"> 
+            </div>
+               <div   class="msg msg-error" style="display:none;"> 
+            </div>
+             
+              <div class="text-center">
+          <span class="text-white">Already a member?</span>
+          <a href="/login">Login</a>
+        </div>
+                      </form>
+                      
+                      
+            </div>
+        </div>
+    </div>
+  <script>
+  function checkAvailability() {
+		if($("#emailid").val().length<5) return;
+		
+		$("#user-availability-status").html("Checking Availability......"); 
+	jQuery.ajax({
+	url: "/checkAvailability",
+	data:'emailid='+$("#emailid").val(),
+	type: "POST",
+	success:function(data){
+	$("#user-availability-status").html(data.html); 
+	},
+	error:function (){}
+	});
+	}
+  (function ($) {  
+		
+	  $('input[name=fullname]').on('keypress',function(event){
+			 return validatealpha(event);		 
+		 });  
+
+
+$('input[name=mobileno]').on('keypress',function(event){
+		 return validatemobile(event);		 
+	 });		
+	
+$("#signup").off( "submit");
+$("#signup").submit(function(e) {
+
+   e.preventDefault(); // avoid to execute the actual submit of the form.
+   $('#submit').prop('disabled',true);
+   var form = $(this);
+	  $(".msg").show().hide();
+   var url = form.attr('action'); 
+   var data=form.serialize(); 
+   $.ajax({
+          type: "POST",
+          url: $(this).attr("action"),  
+          data:data , // serializes the form's elements.
+		    dataType: "json",
+          success: function(data)
+          { 
+		      if(data.success)
+               {
+		    	    $(".msg.msg-success").html(data.html).show();
+		    	    $("#signup").trigger('reset');
+		    		$("#user-availability-status").html(""); 
+		    	    //const myTimeout = setTimeout(function() {document.location.href="/login";}, 2000);
+		    	  } // show response from the php script.
+			  else
+				  {
+				     $(".msg.msg-error").html(data.html).show();
+				     $('#submit').prop('disabled',false);
+				  }
+		       
+		  
+		      }
+        });
+		     });  
+})(jQuery); 
+  </script>
+   
+</body>
+</html>
+ 

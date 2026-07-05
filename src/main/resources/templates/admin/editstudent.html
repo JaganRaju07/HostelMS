@@ -1,0 +1,240 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:block  th:replace="admin/base :: header">
+   </th:block>
+   
+                  <div class="content">
+                <div class="container">
+                     
+                    <div class="row">
+                        <div class="  col-md-10 m-auto mt-3">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Edit Student</h2>
+                        </div>
+                            <div class="card">
+                                <div class="content">
+   <form action="/admin/student" class="ajaxfrm" method="post" id="frmadd"  >
+       <input type="hidden" name="action"  value="edit"> 
+       <input type="hidden" name="id"  th:value="${user.id}"> 
+            <!-- Name input-->
+                             
+                    <div class="form-group row">
+                        <label for="title" class="col-md-3">Name</label>
+                        <div class=" col-md-7">
+                        <input type="text" name="name"  th:value="${user.fullname}" class="form-control" id="name"  placeholder="Enter  name" required>
+                    </div>
+                    </div>
+                 
+ 
+   <div class="form-group row">
+    <label for="branch" class="col-md-3     required">Department</label> 
+    <div class="col-md-3">
+         <select id="branch" name="department" onchange="loadcourses(this.value)" required="required" class="custom-select form-select"> 
+		<option></option>
+		<option th:value="${d.getId()}" th:text="${d.getName()}" th:each="d: ${departments}"></option>  
+      </select>
+    </div>
+   
+    <label for="course" class="col-md-3     required">Course</label> 
+    <div class="col-md-3">
+         <select id="course" name="course" required="required" class="custom-select form-select"> 
+		 
+      </select>
+    </div>
+  </div>
+     <div class="form-group row">
+    <label for="year" class="col-md-3     required">Year</label> 
+    <div class="col-md-3">
+      <select id="year" name="year" required="required" class="custom-select form-select">
+	   <option value=1>1st Year</option>
+	  <option value=2>2nd Year</option>
+      <option value=3>3rd Year</option>
+	   <option value=4>4th Year</option>
+      </select>
+    </div>
+ 
+    <label for="regno" class="col-md-3    required">Reg.No</label> 
+    <div class="col-md-3">
+      <input id="regno" name="regno" type="text"  th:value="${student.regno}" class="form-control" required="required">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="mobile" class="col-md-3    required">Mobile</label> 
+    <div class="col-md-7">
+      <input id="mobile" name="mobile"  th:value="${user.mobilenumber}" type="text" maxlength=10 minlength=10 class="form-control" required="required">
+    </div>
+    </div>
+   <div class="form-group row">
+    <label for="email" class="col-md-3  required">Email</label> 
+    <div class="col-md-7">
+      <input id="email" name="email"  th:value="${user.username}" type="text" class="form-control">
+    </div>
+  </div>
+ 
+     
+      <div class="form-group row">
+    
+   <label for="sspid" class="col-md-3    required">Date of Birth </label> 
+    <div class="col-md-3">
+      <input id="dob" name="dob" type="date" class="form-control"   th:value="${student.dob}" required="required">
+    </div>
+	 
+
+                 <label for="gender" class="col-md-3    required">Gender: </label>
+<div class="col-md-3">
+                  <div class="form-check form-check-inline   ">
+                    <input class="form-check-input" type="radio" name="gender" id="femaleGender"
+                      value="Male" th:checked="${student.gender=='Male'}" />
+                    <label class="form-check-label" for="gender">Male</label>
+                  </div>
+
+                  <div class="form-check form-check-inline    ">
+                    <input class="form-check-input" type="radio" name="gender" id="maleGender"
+                      value="Female" th:checked="${student.gender=='Female'}" />
+                    <label class="form-check-label" for="gender">Female</label>
+                  </div>
+ </div>
+                </div>
+	<div class="form-group row">
+                        <label for="title" class="col-md-3">Parent/Guardian Name</label>
+                        <div class=" col-md-7">
+                        <input type="text" name="parentname" class="form-control"   th:value="${student.parentname}" id="parentname"  placeholder="Enter  name" required>
+                    </div>
+                    </div>
+	<div class="form-group row">
+    <label for="mobile" class="col-md-3    required">Parent/Guardian Mobile</label> 
+    <div class="col-md-7">
+      <input id="parentmobile" name="parentmobile" type="text" maxlength=10 minlength=10   th:value="${student.parentmobile}" class="form-control" required="required">
+    </div>
+    </div>
+      <div class="form-group row">
+    <label for="col-md-7" class="col-md-3    required">Address</label> 
+    <div class="col-7">
+      <textarea id="address" name="address" class="form-control"   th:text="${student.address}" required="required"></textarea>
+    </div>
+    </div>
+ <div class="form-group row">
+    <label for="password" class="col-md-3  required">Password</label> 
+    <div class="col-md-7">
+      <input id="password" name="password" type="password" class="form-control"  >
+    </div>
+  </div>
+     <div class="form-group row">
+    <label for="deposit" class="col-md-3  required">Deposit</label> 
+    <div class="col-md-7">
+      <input id="deposit" name="deposit" type="number" th:value="${student.deposit}"  class="form-control" required>
+    </div>
+  </div>  
+     <div class="form-group row">
+                        <label for="password" class="col-md-3  required">Status</label> 
+                        <div class="col-md-4">
+                          <select class="form-select" name="status" required>
+                            <option    value="0" th:selected="${user.status==0}">Inactive</option>
+                            <option    value="1" th:selected="${user.status==1}"  >Active</option>
+                        </select>
+                      </div>
+                      </div>                        
+        <div class="alert alert-danger" style="display:none"></div>
+        <div class="alert alert-success"  style="display:none"></div>
+       <div class="form-group">
+        <button type="submit" class="btn btn-primary w-50 float-end">Update</button> 
+        </div>
+       </form>
+                            </div>
+        </div> 
+        </div>
+        </div>
+        </div>
+        </div>
+     <!-- CONTENT-WRAPPER SECTION END-->
+   <th:block   th:replace="admin/base :: footer">
+ 
+   </th:block> 
+<script th:inline="javascript">
+/*<![CDATA[*/
+
+   $( function() {
+	   $("[name=department]").val([[${student.department}]]);
+	   $("[name=department]").change();
+	   $("[name=year]").val([[${student.year}]]);
+	   
+	   
+	  	  $("#frmadd").off( "submit");
+	  	   $("#frmadd").submit(function(e) {
+	  		 widgItems.forEach(function(item){
+	 			item.updateWidgInput();
+	 		}) ;
+	  	      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+	  	      var form = $(this);
+	  	      var url = form.attr('action');
+	  	      
+	  	      $("#frmadd .alert").hide();
+		      var data=new FormData(this);//form.serialize();  
+	  	      $.ajax({
+	  	             type: "POST",
+	  	             url: $(this).attr("action"),  
+	  	             data:data , // serializes the form's elements.
+	  	   		    dataType: "json",
+	     		    processData: false,
+	                contentType:false, 
+	  	             success: function(data)
+	  	             {
+	  	   		      if(data.success)
+	  	                  { $("#frmadd .alert.alert-success").html(data.message).show(); document.location.href="/admin/studentmanage"} // show response from the php script.
+	  	   			  else
+	  	   				  {
+	  	   			     $("#frmadd .alert.alert-danger").html(data.message).show(); // show response from the php script.  
+	  	   				  }
+	  	   		  
+	  	   		      }
+	  	           });
+	  	   		     }); 
+	  	   
+	  	  $('input[name=parentmobile]').on('keypress',function(event){
+	 		 return validatemobile(event);		 
+	 	 });
+	  
+   });
+   
+   function loadcourses(dept)
+   {  
+		 data={action:"readbydepartment",department:dept} ; 
+  $.ajax({
+         type: "POST",
+         url: "/admin/course",  
+         data:data , // serializes the form's elements.
+		    dataType: "json",
+         success: function(data)
+         {
+		        if(data.success)
+		        	{
+		        	 
+		        	var strhtml=""
+		        	data=data.data;
+		        	  for(var i=0;i<data.length;i++)
+		        		  { 
+		        		     strhtml+="<option value='"+data[i].id+"'>"+data[i].name+"</option>";  
+		        		  }
+		        	$("select[name=course]").html(strhtml); 
+
+		     	   $("[name=course]").val([[${student.course}]]);
+		        	}
+		      }
+       });
+   }
+   
+   /*]]>*/
+   </script>
+   <style>
+     .form-group label{text-align:right;}
+   </style>
+</body>
+</html>

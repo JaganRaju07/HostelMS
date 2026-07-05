@@ -1,0 +1,333 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:room  th:replace="admin/base :: header">
+   </th:room>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Edit Room Allocation</h2>
+  <input  type="hidden" id="room"  th:value="${room}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="  col-md-10 m-auto   mt-3">
+                            <div class="card">
+                            <div class="card-body"> 
+  
+                   <div class="form-group row">
+                       <label for="" class="col-md-2">Room No.:</label>
+                       <div class="col-md-4">
+                       <label   class="form-control" id="roomno"></label>
+                       </div>
+                   </div>
+                      
+                   <div class="form-group row">
+                       <label for="" class="col-md-2">Block:</label>
+                       <div class="col-md-4">
+                       <label   class="form-control" id="block"></label>
+                       </div>
+                   </div>    
+                   <div class="form-group row">
+                       <label for="" class="col-md-2">Floor:</label>
+                       <div class="col-md-4">
+                       <label   class="form-control" id="floor"></label>
+                       </div>
+                   </div>
+                      <div class="form-group row">
+                       <label for="" class="col-md-2">Max-Persons:</label>
+                       <div class="col-md-4">
+                       <label   class="form-control" id="maxpersons"></label>
+                       </div>
+                   </div>
+                  <table id="allocationtab" class="table table-striped table-hover table-bordered " cellspacing="0" width="100%" style="background: white;padding: 0 5px;">
+
+    <thead>
+        <tr> 
+            <th>Student</th>
+            <th>From Date</th> 
+            <th>Monthly Rent</th> 
+            <th>Action</th> 
+          </tr>
+    </thead>
+    
+    <tbody>
+      
+      
+    </tbody>
+    </table>
+    </div>
+                   
+                             </div>
+ 
+            </div>
+        </div> 
+</div>
+</div>
+
+ 
+
+<th:block  th:replace="admin/base :: footer">
+</th:block>
+     
+<div class="modal fade" id="addpopupModal"   aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Allocate</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+      </div>
+       <form action="/admin/allocateroom" method="post" id="frmadd">
+       <input type="hidden" name="action"  value="allocateroom">
+       <input type="hidden" name="room"  th:value="${room}">
+      <div class="modal-body">        
+            <!-- Name input-->
+                            <div class="form-group">
+                             <label for="name">Student</label> 
+                                 <select name="student" class="form-select" required>
+                                 </select>
+                            </div>
+                            <div class="form-group">
+                             <label for="fromdate">From date</label> 
+                               <input id="fromdate" name="fromdate" type="date" class="form-control" required="required">
+                            </div>
+                            <div class="form-group">
+                             <label for="rent">Monthly Rent</label> 
+                               <input id="rent" name="rent" type="number" min="0" max="10000" class="form-control" required="required">
+                            </div>
+        <div class="alert alert-danger" style="display:none"></div>
+        <div class="alert alert-success"  style="display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Allocate</button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
+  
+      
+<div class="modal fade" id="editpopupModal"   aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Deallocate</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+      </div>
+       <form action="/admin/allocateroom" method="post" id="frmedit">
+       <input type="hidden" name="action"  value="deallocateroom">
+       <input type="hidden" name="id"  >
+      <div class="modal-body">        
+            <!-- Name input-->
+                            <div class="form-group">
+                             <label for="name">Student</label> 
+                                 <label id="student" class="form-select"  	>
+                                 </label>
+                            </div>
+                            <div class="form-group">
+                             <label for="fromdate">From date</label> 
+                               <input id="fromdate" name="fromdate" type="date" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                             <label for="rent">Monthly Rent</label> 
+                               <input id="rent" name="rent" type="number" class="form-control" readonly>
+                            </div>
+                             <div class="form-group">
+                             <label for="fromdate">To date</label> 
+                               <input id="fromdate" name="todate" type="date" class="form-control" required>
+                            </div>
+        <div class="alert alert-danger" style="display:none"></div>
+        <div class="alert alert-success"  style="display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Deallocate</button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
+  
+    <script>
+    $(function(){
+  	  data={action:"read",room:$("#room").val()} ; 
+      $.ajax({
+             type: "POST",
+             url: "/admin/allocateroom",  
+             data:data , // serializes the form's elements.
+   		    dataType: "json",
+             success: function(data)
+             {
+   		        if(data.success)
+   		        	{
+   		              $("#roomno").html(data.roomno);
+   		              $("#floor").html(data.floor);
+   		              $("#maxpersons").html(data.maxpersons);
+   		              $("#block").html(data.block);
+   		              $("#allocationtab tbody").html("");
+   		              var strhtml="";
+   		              var tdata=data.data;
+   		              for(var i=1;i<=data.maxpersons;i++)
+   		            	{
+   		            	  if(tdata[i-1]){
+   		            	   strhtml+="<tr>";
+   		            	   strhtml+="<td>"+tdata[i-1].student+"</td>";
+   		            	   strhtml+="<td>"+tdata[i-1].fromdate+"</td>"; 
+   		            	   strhtml+="<td>"+tdata[i-1].monthlyrent+"</td>"; 
+   		            	   strhtml+="<td><a href='#' onclick='deallocatefrm("+tdata[i-1].id+")' class='btn btn-primary'>Deallocate</a></td>";  
+   		            	   strhtml+="<tr>";
+   		            	  }
+   		            	  else{
+      		            	   strhtml+="<tr>";
+       		            	   strhtml+="<td>NA</td>";
+       		            	   strhtml+="<td>&nbsp;</td>"; 
+       		            	   strhtml+="<td>&nbsp;</td>"; 
+       		            	   strhtml+="<td><a href='#' onclick='allocatefrm()' class='btn btn-primary'>Allocate</a></td>"; 
+       		            	   strhtml+="<tr>";
+       		            	  }
+   		            	  
+   		            	}
+   		           $("#allocationtab tbody").html(strhtml);
+   		        	}
+   		      }
+           });
+      
+      $("#frmadd").off( "submit");
+ 	   $("#frmadd").submit(function(e) {
+ 		 widgItems.forEach(function(item){
+			item.updateWidgInput();
+		}) ;
+ 	      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+ 	      var form = $(this);
+ 	      var url = form.attr('action');
+ 	      
+ 	      $("#frmadd .alert").hide();
+	      var data=new FormData(this);//form.serialize();  
+ 	      $.ajax({
+ 	             type: "POST",
+ 	             url: $(this).attr("action"),  
+ 	             data:data , // serializes the form's elements.
+ 	   		    dataType: "json",
+    		    processData: false,
+               contentType:false, 
+ 	             success: function(data)
+ 	             {
+ 	   		      if(data.success)
+ 	                  { $("#frmadd .alert.alert-success").html(data.message).show(); document.location.reload();} // show response from the php script.
+ 	   			  else
+ 	   				  {
+ 	   			     $("#frmadd .alert.alert-danger").html(data.message).show(); // show response from the php script.  
+ 	   				  }
+ 	   		  
+ 	   		      }
+ 	           });
+ 	   		     }); 
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	   
+ 	  $("#frmedit").off( "submit");
+	   $("#frmedit").submit(function(e) {
+		 widgItems.forEach(function(item){
+			item.updateWidgInput();
+		}) ;
+	      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+	      var form = $(this);
+	      var url = form.attr('action');
+	      
+	      $("#frmedit .alert").hide();
+	      var data=new FormData(this);//form.serialize();  
+	      $.ajax({
+	             type: "POST",
+	             url: $(this).attr("action"),  
+	             data:data , // serializes the form's elements.
+	   		    dataType: "json",
+   		    processData: false,
+              contentType:false, 
+	             success: function(data)
+	             {
+	   		      if(data.success)
+	                  { $("#frmedit .alert.alert-success").html(data.message).show(); document.location.reload();} // show response from the php script.
+	   			  else
+	   				  {
+	   			     $("#frmedit .alert.alert-danger").html(data.message).show(); // show response from the php script.  
+	   				  }
+	   		  
+	   		      }
+	           });
+	   		     }); 
+    });
+    
+    
+    function allocatefrm()
+    {
+    	
+    	 data={action:"searchforallocation"} ; 
+         $.ajax({
+                type: "POST",
+                url: "/admin/student",  
+                data:data , // serializes the form's elements.
+      		    dataType: "json",
+                success: function(data)
+                {
+      		        if(data.success)
+      		        	{ 
+      		              var strhtml="";
+      		              var tdata=data.data;
+
+         		           $("#frmadd [name=student]").html('');
+      		              for(var i=0;i<tdata.length;i++)
+      		            	{
+      		            	strhtml+="<option value="+tdata[i].id+">"+tdata[i].name+"</option>";
+      		            	}
+      		              $("#frmadd [name=student]").html(strhtml);
+      		              $("#frmadd .alert").hide();
+      		  	         jQuery('#addpopupModal').modal('show');
+      		        	}
+      		      }
+              });
+
+       
+    }
+    
+    function deallocatefrm(id)
+    {
+    	 data={action:"readbyid",id:id} ; 
+         $.ajax({
+                type: "POST",
+                url: "/admin/allocateroom",  
+                data:data , // serializes the form's elements.
+      		    dataType: "json",
+                success: function(data)
+                {
+      		        if(data.success)
+      		        	{ 
+
+      		           $("#frmedit [name=id]").val(data.id);
+         		           $("#frmedit [id=student]").html(data.student);
+
+         		           $("#frmedit [name=fromdate]").val(data.fromdate);
+         		           $("#frmedit [name=rent]").val(data.monthlyrent);
+      		              $("#frmedit .alert").hide();
+      		  	         jQuery('#editpopupModal').modal('show');
+      		        	}
+      		      }
+              });
+    }
+  </script>
+</body>
+</html>

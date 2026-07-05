@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="admin/base :: head">
+     
+</head>
+<body>
+<th:block th:replace="admin/base :: header">
+</th:block>
+   
+ <div class="card card-info">
+<div class="card-heading">
+Registered  Owners/Tenants
+</div>
+<div class="card-body">
+
+<div class="alert alert-success" role="alert"  th:if="${updatestatus_success}" th:text="${updatestatus_success}">  
+</div>
+
+<div id="print_out">
+                    
+                            <div class="table-responsive">
+                              <table class="table table-stripped bg-transparent">
+                                     <thead>
+                                        <tr>  
+                                            <th>Full Name</th>
+                                            <th>Email id </th>
+                                            <th>Mobile Number</th>
+                                            <th>Reg Date</th>   
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>    
+                                        <tr class="odd gradeX" th:each="result:${regusers}" > 
+                                             <td class="center" th:text="${result.fullname}"></td>
+                                            <td class="center" th:text="${result.emailid}"></td>
+                                            <td class="center" th:text="${result.mobilenumber}"></td>
+                                             <td class="center" th:text="${result.regdate}"></td> 
+                                              
+                                            <td class="center">
+<th:block th:if="${result.status==1}">
+<a href='#' class='dialoganchor' th:data-href="${'/admin/changeuserstatus/'+result.id+'/0'}" onclick="return confirm('Are you sure you want to block this user?');" >  <button class="btn btn-danger"> Block</button>
+</a>
+</th:block>
+  <th:block th:unless="${result.status==1}"> 
+
+                                            <a  class='dialoganchor' href='#' th:data-href="${'/admin/changeuserstatus/'+result.id+'/1'}" onclick="return confirm('Are you sure you want to active this user?');"><button class="btn btn-primary"> Unblock</button> 
+                                          </a>
+                                          
+                                          </th:block>
+                                            </td>
+                                        </tr> 
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    </div> 
+                    <!--End Advanced Tables -->
+                
+
+ 
+
+     <!-- CONTENT-WRAPPER SECTION END-->
+      <th:block   th:replace="admin/base :: footer">
+ 
+   </th:block> 
+   <script>
+   $(function() { 
+	     $(".dialoganchor").off( "click");
+	 	$(".dialoganchor").click(function(e) { 
+	 	    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+	 	    var ele = $(this);
+	 	    var url = ele.attr('data-href');
+	 	     if(!url) return;
+	 	    $.ajax({
+	 	           type: "POST",
+	 	           url: url,  
+	 			    dataType: "json",
+	 	           success: function(data)
+	 	           {
+	 			       alert(data.html);
+	 	                document.location.reload(); 
+	 	           }
+	 	         });
+
+	 	}); 
+   }); 
+   </script>
+</body>
+</html>

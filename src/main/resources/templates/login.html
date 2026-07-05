@@ -1,0 +1,63 @@
+<!doctype html>
+<!-- 
+* Bootstrap Simple Admin Template
+* Version: 2.1
+* Author: Alexis Luna
+* Website: https://github.com/alexis-luna/bootstrap-simple-admin-template
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Hostel Management System</title>
+        <link rel="icon" type="image/png" href="/assets/img/bootstraper-logo.png">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/auth.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="auth-content">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <img class="brand" src="/assets/img/bootstraper-logo.png" width="100" alt="logo">
+                       <h4>Hostel Management System</h4>
+                    </div>
+                    <h6 class="mb-4 text-muted">Login to your account</h6>
+                    <form action="/login"  method="POST">
+                        <div class="mb-3 text-start">
+                            <label for="username" class="form-label">Email address</label>
+                            <input type="email" name="username" class="form-control" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <div class="form-check">
+                              <input class="form-check-input" name="remember" type="checkbox" value="" id="check1">
+                              <label class="form-check-label" for="check1">
+                                Remember me on this device
+                              </label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary mb-4" style="width:100%">Login</button>
+                    </form> 
+                    
+                    <div  th:if="${param.error}" class="alert alert-danger">Invalid Username or Password</div>
+        
+            <div th:if="${param.logout}" class="alert alert-success">You have been logged out. 
+            </div> 
+                    <p class="mb-0 text-muted">Don't have account yet? <a href="/signup">Signup</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="admin/base :: head">
+     
+</head>
+
+<body>
+   <th:block  th:replace="admin/base :: header">
+   </th:block>
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 page-header"> 
+                            <h2 class="page-title">Noticeboard</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="  col-md-10 m-auto   mt-3">
+                            <div class="card">
+                            <div class="card-body"> 
+                            
+<a   type="button" class="btn btn-primary  float-end m-2" href="/admin/addnoticeboard">Add </a> 
+            <table id="listtab" class="table table-striped table-hover table-bordered table-sm" cellspacing="0" width="100%" style="background: white;padding: 5px">
+
+                <thead>
+                    <tr> 
+                        <th>Subject</th>  
+                        <th>Status</th>  
+                        <th>Creation time</th>  
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+              
+                <tbody>
+                    
+</tbody>
+</table>
+ 
+</div>
+</div> 
+</div>
+</div>
+</div>
+</div>
+<th:block  th:replace="admin/base :: footer">
+</th:block>
+<script> 
+
+ function loaddata()
+    { 
+    	 if(dtable!=null) $('#listtab').DataTable().clear().destroy();
+    	 var fd=new FormData();
+    	 fd.append('action','readall');
+    	 
+        $.ajax({
+               type: "POST",
+               url: "/admin/noticeboard",  
+               data:fd , // serializes the form's elements. 
+               processData: false,
+               contentType:false, 
+     		    dataType: "json",
+               success: function(data)
+               {
+     		        if(data.success)
+     		        	{
+     		        	$("#listtab tbody").html("<h2>Loading.........</h2>");
+     		        	var strhtml=""
+     		        	data=data.data;
+     		        	  for(var i=0;i<data.length;i++)
+     		        		  {
+     		        		     strhtml+="<tr>"; 
+     		        		     strhtml+="<td>"+data[i].subject+"</td><td>"+(data[i].status==1?'Active':'Inactive')+"</td><td>"+data[i].creationtime+"</td>"; 
+     		        		      strhtml+="<td><a href='/admin/editnoticeboard/"+data[i].id+"' class='btn btn-info btn-sm active'><i class='fa fa-pencil'></i></a>";
+     		        		     strhtml+="</td>";
+     		        		     strhtml+="</tr>";
+     		        		  }
+     		        	$("#listtab tbody").html(strhtml); 
+     		        	dtable=$('#listtab').DataTable();  
+     		        	}
+     		      }
+             });
+    }
+ var dtable;
+ (function(){
+ loaddata(); 
+ })();
+ </script>
+</body>
+</html>

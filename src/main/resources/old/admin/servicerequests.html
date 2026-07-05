@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block> 
+<div class="card card-info">
+<div class="card-heading">
+Service requests
+</div>
+<div class="card-body">
+<div id="print_out">
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Datetime</th>
+                <th>Service</th>   
+                <th>Requested By</th>   
+                <th>Fee(in Rs.)</th>  
+                <th>Status</th>   
+                <th>Action</th>  
+            </tr>
+</thead>
+<tbody>
+      <tr th:each="s:${servicerequests}"> 
+                <td th:text="${s.dtime}"></td>
+                <td th:text="${s.service}"></td> 
+                <td th:text="${s.user}"></td>
+                <td th:text="${s.amount}"></td>
+                <td th:text="${s.status}"></td> 
+                 <td  class="nprint">
+                    <a class="p-2" href="javascript:void(0)" title='Edit'   th:data-id="${s.id}" onclick="loadedit(this)"><i class="fa fa-pen"></i></a>
+                
+                </td>
+            </tr>
+</tbody>
+</table>
+</div>
+<button   class="btn btn-primary btn-lg float-end m-2" title="Service requests" id="print">Print </button> 
+ 
+</div> 
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+   
+   
+   
+   
+
+   
+   <div class="modal fade" id="edit_model" data-user_id="0" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="user_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content"> 
+        <form class="ajaxfrm" id="editform"    data-reload=1 data-reset=1 action="/admin/updateservicerequestdb" > 
+         <input type="hidden" name="id" value="">
+      <div class="modal-header">
+        <h5 class="modal-title white-text" id="user_modal_title">View Service request</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body row">
+         <div class="col-md-6 border-end">
+              <table id="editform">
+                <thead>
+                   <tr><th>Service</th><td id="service"></td></tr>
+                   <tr><th>Description</th><td id="desc"></td></tr>
+                   <tr><th>Flat</th><td id="flat"></td></tr>
+                   <tr><th>Requested By</th><td id="user"></td></tr>
+                   <tr><th>Fee(in Rs.)</th><td id="fee"></td></tr>
+                   <tr><th>Status</th><td>   <select class="form-select" name="status" id="status" required>  
+                   <option th:each="i : ${statuses}" th:value="${i.acode}" th:text="${i.aname}"></option>
+                </select></td></tr>
+                   <tr><th>Date time</th><td id="dtime"></td></tr>
+                </thead>
+              </table>
+         </div>
+         <div class="col-md-6" style="height:250px;overflow:scroll;">
+            <h5 class="text-decoration-underline">Payment</h5>
+             <div class="row d-flex">
+             <div class="col-md-12 paidinput"> 
+             <table id="editform">
+                <thead>
+                   <tr><th>Paid</th><td>
+                     <input type="checkbox" name="paid" id="paid" value="1" />
+                   </td></tr>
+                   <tr><th>Paid Mode</th><td>
+                     <select   name="pmode" id="pmode">
+                     <option th:each="i : ${paymentmodes}" th:value="${i.name}" th:text="${i.name}"></option>
+                     </select>
+                   </td></tr>
+                   <tr><th>Paid Amount(in Rs.)</th><td>
+                     <input type="number" name="pamt" id="pamt">
+                   </td></tr>
+                   <tr><th>Paid Date</th><td>
+                     <input type="date" name="pdt" id="pdt">
+                   </td></tr>
+                   </thead>
+                   </table>
+             </div>
+             </div>
+         </div>  
+      </div>
+      <div class="modal-footer justify-content-start">      
+        <div class="col-8">
+           <div    class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-success w-100">Submit</button>
+        </div>
+      </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+  
+   
+   
+    <script>
+    var ctempt='<div class="card mb-4 text-black shadow">     <div class="card-body">         <p>{{comment}}</p>             <div class="d-flex justify-content-end">                 <p class="small mb-0 ms-2 text-success">-{{user}},{{dtime}}</p>             </div>     </div> </div>';
+     function loadedit(btn)
+     {
+        var id=$(btn).attr("data-id");
+        $.ajax({ 
+	           url: "/admin/getservicerequest/"+id, 
+			    dataType: "json",
+	           success: function(data)
+	           {
+	        	   request=data.request; 
+	        	   comments=data.comments;
+	        	    $("#editform [name=id]").val(request.id); 
+	        	    $("#editform #service").html(request.service); 
+	        	    $("#editform #desc").html(request.sdesc); 
+	        	    $("#editform #fee").html(request.fee); 
+	        	    $("#editform #flat").html(data.flat); 
+	        	    $("#editform #status").val(data.status); 
+	        	    $("#editform #user").html(data.user); 
+	        	    $("#editform #dtime").html(request.requestedtime); 
+	        	    $("#editform #paid").attr('checked',request.paid); 
+	        	    $("#editform #pamt").val(request.paidamount); 
+	        	    $("#editform #pmode").val(request.paidmode);
+	        	    var dt=new Date(request.paiddate);
+         
+	        	    $("#editform #pdt").val(dt.toISOString().split('T')[0]); 
+	        	    if(data.status==2)
+	        	    {
+	        	    	$('#editform [type="submit"]').addClass('d-none');
+	        	    	$('#editform #status').attr('disabled',true);
+	        	    	$('.paidinput input,.paidinput select').attr('disabled',true); 
+	        	    }
+	        	    else
+	        	    {
+	        	    	$('#editform  [type="submit"]').removeClass('d-none');
+	        	    	$('#editform #status').attr('disabled',false);
+	        	    	$('.paidinput  input,.paidinput select').attr('disabled',false); 
+	        	    }
+	        	    
+	        	    $("#edit_model").modal('show');
+	        	    
+	           }
+        });	          
+     }
+     
+      
+  </script>
+  
+  
+</body>
+</html>

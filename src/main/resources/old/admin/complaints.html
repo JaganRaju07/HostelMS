@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block> 
+<div class="card card-info">
+<div class="card-heading">
+Complaints
+</div>
+<div class="card-body">
+<div id="print_out">
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Datetime</th>
+                <th>Person</th> 
+                <th>Title</th> 
+                <th>Status</th> 
+                <th class="nprint">View</th>
+            </tr>
+</thead>
+<tbody>
+      <tr th:each="s:${complaints}"> 
+                <td th:text="${s.creationdate}"></td>
+                <td th:text="${s.user}"></td>
+                <td th:text="${s.ctitle}"></td>
+                <td th:text="${s.status}"></td>
+                <td  class="nprint">
+                    <a class="p-2" href="javascript:void(0)" title='Comments'   th:data-id="${s.id}" onclick="loadedit(this)"><i class="fa fa-comment"></i></a>
+                 
+                </td>
+            </tr>
+</tbody>
+</table>
+</div>
+<button   class="btn btn-primary btn-lg float-end m-2" title="Complaints" id="print">Print </button> 
+ 
+</div> 
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+   
+   
+   
+   
+   
+   
+   <div class="modal fade" id="edit_model" data-user_id="0" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="user_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content"> 
+        <form class="ajaxfrm" id="editform"    data-reload=1 data-reset=1 action="/admin/addcomplaintcommentdb" > 
+         <input type="hidden" name="id" value="">
+      <div class="modal-header">
+        <h5 class="modal-title white-text" id="user_modal_title">View Complaint</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body row">
+         <div class="col-md-4 border-end">
+              <table id="editform" class="commentview">
+                <thead>
+                   <tr><th>Title</th></tr>
+                   <tr><td id="title"></td></tr>
+                   <tr><th>Description</th></th></tr>
+                   <tr><td id="desc"></td></tr>
+                   <tr><th>Flat</th></th></tr>
+                   <tr><td id="flat"></td></tr>
+                   <tr><th>Status</th></th></tr>
+                   <tr><td>
+                    <select class="form-select" name="status" id="status" required>  
+                   <option th:each="i : ${statuses}" th:value="${i.acode}" th:text="${i.aname}"></option>
+                </select>
+                   </td></tr>
+                   <tr><th>Date time</th></th></tr>
+                   <tr><td id="dtime"></td></tr>
+                </thead>
+              </table>
+         </div>
+         <div class="col-md-8" style="height:300px;overflow:scroll;">
+            <h5 class="text-decoration-underline">Comments</h5>
+             <div class="row d-flex">
+  <div class="col-md-12 comments">
+             
+             </div>
+             </div>
+         </div> 
+         <div class="col-md-12 commentinput">
+         Your Comments:
+          <textarea class="form-control" name="comment"></textarea>
+            </div>
+      </div>
+      <div class="modal-footer justify-content-start">      
+        <div class="col-8">
+           <div    class="msg msg-error d-none"> </div>
+        
+            <div class="msg msg-success d-none"> </div>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-success w-100">Submit</button>
+        </div>
+      </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+  
+   
+   
+    <script>
+    var ctempt='<div class="card mb-4 text-black shadow">     <div class="card-body">         <p>{{comment}}</p>             <div class="d-flex justify-content-end">                 <p class="small mb-0 ms-2 text-success">-{{user}},{{dtime}}</p>             </div>     </div> </div>';
+     function loadedit(btn)
+     {
+        var id=$(btn).attr("data-id");
+        $.ajax({ 
+	           url: "/admin/getcomplaint/"+id, 
+			    dataType: "json",
+	           success: function(data)
+	           {
+	        	   complaint=data.complaint; 
+	        	   comments=data.comments;
+	        	    $("#editform [name=id]").val(complaint.id); 
+	        	    $("#editform #title").html(complaint.ctitle); 
+	        	    $("#editform #desc").html(complaint.cdescription); 
+	        	    $("#editform #flat").html(data.flat); 
+	        	    $("#editform #status").val(data.status); 
+	        	    $("#editform #dtime").html(data.creationdate); 
+	        	    $(".comments").html(''); 
+	        	    comments.forEach(function myFunction(item, index, arr) {
+	        	       var ct=ctempt.replace("{{user}}",item.user); 
+	        	       ct=ct.replace("{{comment}}",item.comment); 
+	        	       ct=ct.replace("{{dtime}}",item.creationdate);
+	        	        $(".comments").append(ct); 
+	        	    });
+                    
+	        	    if(data.status==2)
+	        	    {
+	        	    	$('#editform [type="submit"]').addClass('d-none');
+	        	    	$('#editform #status').attr('disabled',true);
+	        	    	$('.commentinput').addClass('d-none');
+	        	    }
+	        	    else
+	        	    {
+	        	    	$('#editform  [type="submit"]').removeClass('d-none');
+	        	    	$('#editform #status').attr('disabled',false);
+	        	    	$('.commentinput').removeClass('d-none');
+	        	    }
+	        	    	
+	        	    $("#edit_model").modal('show');
+	        	    
+	           }
+        });	          
+     }
+     
+      
+  </script>
+  
+  
+</body>
+</html>

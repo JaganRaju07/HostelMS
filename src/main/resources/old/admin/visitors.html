@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="base :: head">
+     
+</head>
+<body>
+<th:block th:replace="base :: header">
+</th:block> 
+<div class="card card-info">
+<div class="card-heading">
+Visitors
+</div>
+<div class="card-body">
+<div id="print_out">
+<form   role="form" id="frm" method="post"   action="/admin/getvisitors" > 
+<div class="form-group">
+<label>Building</label>
+ <select class="form-select" name="building" id="building" required>  
+                   <option value=0>--Select--</option>
+                   <option th:each="i : ${buildings}" th:value="${i.id}" th:text="${i.name}"></option>
+                </select>
+                 </div>
+                 
+                 </form>
+                 
+
+ <table class="table table-stripped bg-transparent">
+ <thead>
+            <tr> 
+                <th>Vistor</th>
+                <th>Vistor Time</th> 
+                <th>To meet</th>
+                <th>Flat</th>
+                <th>Purpose</th>  
+            </tr>
+</thead>
+<tbody id="results">
+     
+</tbody>
+</table>
+</div>
+<button   class="btn btn-primary btn-lg float-end m-2" title="Complaints" id="print">Print </button> 
+ 
+</div> 
+</div>
+
+<!---LOGIN PABNEL END-->            
+             
+  
+     <!-- CONTENT-WRAPPER SECTION END-->
+	   <th:block   th:replace="base :: footer">
+ 
+   </th:block>
+   
+   
+   
+   
+   
+  <script>
+   $(function() { 
+	  $("#building").change(function(){
+		  loadresults();
+	  });
+   }); 
+   var temp="<tr><td>{{visitor}}</td><td>{{visitingtime}}</td><td>{{user}}</td><td>{{flat}}</td><td>{{purpose}}</td></tr>";
+   function loadresults()
+   {
+	   var form = $("#frm");
+  	    var url = form.attr('action');
+  	  $("#results").html('');
+	   $.ajax({ 
+           url: url,  
+           method:"POST",
+	           data: form.serialize(), // serializes the form's elements.
+  			    dataType: "json",
+           success: function(data)
+           {
+        	   var strhtml="";
+        	   vrequests=data.vrequests;
+        	   for(var i=0;i<vrequests.length;i++)
+        		   {
+        	       var strhtml=temp;
+        	       strhtml=strhtml.replace("{{visitor}}",vrequests[i].visitor);
+        	       strhtml=strhtml.replace("{{visitingtime}}",vrequests[i].visitingtime);
+        	       strhtml=strhtml.replace("{{user}}",vrequests[i].user);
+        	       strhtml=strhtml.replace("{{flat}}",vrequests[i].flat);	
+        	       strhtml=strhtml.replace("{{purpose}}",vrequests[i].purpose);	
+        	       $("#results").append(strhtml);
+                   }
+           }
+    });	          
+   }
+   </script>
+   
+</body>
+</html>
