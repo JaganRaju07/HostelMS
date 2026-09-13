@@ -2,7 +2,7 @@ package com.project.hostelms.controller;
  
  
 import com.project.hostelms.CommonFuns;
-import com.project.hostelms.Complaintstatus;
+import com.project.hostelms.ComplaintState;
 import com.project.hostelms.Roomstatuses;
 import com.project.hostelms.LoginTypes; 
 import com.project.hostelms.entity.*;
@@ -45,10 +45,10 @@ public class StudentController {
     @Resource    private UsersRepository members;  
     @Resource    private BlockRepository blocks;      
     @Resource    private RoomRepository rooms;         
-    @Resource    private RoomstudentsRepository roomstatus;       
+    @Resource    private RoomStudentRepository roomstatus;       
     @Resource    private ComplaintRepository complaints;  
     @Resource    private ComplaintcommentsRepository ccomments;       
-    @Resource    private RegistrationrequestsRepository regrequests;    
+    @Resource    private RegistrationRequestRepository regrequests;    
     @Resource    private NoticeboardRepository           noticeboard;
     @Resource    private StudentRepository           students;
     @Resource    private DepartmentRepository departments;
@@ -158,7 +158,7 @@ public class StudentController {
 		     
 		     arr.put("success",  0); 
 		     if (errors.size() == 0) {   
-		       Registrationrequests u=new Registrationrequests();
+		       RegistrationRequest u=new RegistrationRequest();
 		       u.setPassword(CommonFuns.encode64(password));
 		       u.setStatus(1);
 		       u.setFullname(fullname); 
@@ -273,7 +273,7 @@ public class StudentController {
 
     	   
 			ArrayList<Object> lst = new ArrayList<>();
-			for(Roomstudents sm : roomstatus.findByStudent(user.getId(),Sort.by("id").descending()))
+			for(RoomStudent sm : roomstatus.findByStudent(user.getId(),Sort.by("id").descending()))
 			{
 				arr=new Hashtable<String,Object>(); 
 			    arr.put("id", sm.getId()); 
@@ -422,7 +422,7 @@ public class StudentController {
     	 List<Integer> ids =new ArrayList<Integer>();
     	 
     	 
-       	 for(Roomstudents fs:roomstatus.findByStudentAndStatus(user.getId(),1))
+       	 for(RoomStudent fs:roomstatus.findByStudentAndStatus(user.getId(),1))
     	 {
     		 arr = new HashMap < > (); 
     		 if(ids.stream().filter(obj->fs.getRoom()==obj).findAny().orElse(null)==null)
@@ -473,7 +473,7 @@ public class StudentController {
 	       obj.setRoom(room); 
 	       obj.setStudent(user.getId());
 	       obj.setCreationdate(CommonFuns.ctm());
-	       obj.setStatus(Complaintstatus.LODGED.acode());
+	       obj.setStatus(ComplaintState.LODGED.acode());
 	       complaints.save(obj); 
 	    	   arr.put("success",  1); 
 		       arr.put("html",  "Lodged successfully!.");   
@@ -529,7 +529,7 @@ public class StudentController {
     	    arr.put("complaint", cobj);
     	    Room f=rooms.findById(cobj.getRoom());
     	    arr.put("room",f.getRoomno()+"("+blocks.findById(f.getBlock()).getName()+")");
-    	    arr.put("sstatus", Complaintstatus.getName(cobj.getStatus())); 
+    	    arr.put("sstatus", ComplaintState.getName(cobj.getStatus())); 
     	    arr.put("status", cobj.getStatus()); 
     	    arr.put("comments", ccomments.findByComplaintOrderByIdDesc(id));
     	    arr.put("creationdate",CommonFuns.Formatdt(cobj.getCreationdate())); 
@@ -569,7 +569,7 @@ public class StudentController {
     	   
     	  
     	 
-       	 for(Roomstudents fs:roomstatus.findByStudentAndStatus(user.getId(),1))
+       	 for(RoomStudent fs:roomstatus.findByStudentAndStatus(user.getId(),1))
     	 {
     		 arr = new HashMap < > (); 
     		 if(ids.stream().filter(obj->fs.getRoom()==obj).findAny().orElse(null)==null)

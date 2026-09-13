@@ -31,7 +31,7 @@
       <tr th:each="s:${complaints}"> 
                 <td th:text="${s.creationdate}"></td>
                 <td th:text="${s.ctitle}"></td>
-                <td th:text="${T(com.project.hostelms.Complaintstatus).getName(s.status)}"></td>
+                <td th:text="${T(com.project.hostelms.ComplaintState).getName(s.status)}"></td>
                 <td  class="nprint">
                     <a class="p-2" href="javascript:void(0)" title='Comments'   th:data-id="${s.id}" onclick="loadedit(this)"><i class="fa fa-comment"></i></a>
                  

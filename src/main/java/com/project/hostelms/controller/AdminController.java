@@ -2,7 +2,7 @@ package com.project.hostelms.controller;
  
   
 import com.project.hostelms.CommonFuns;
-import com.project.hostelms.Complaintstatus;
+import com.project.hostelms.ComplaintState;
 import com.project.hostelms.Roomstatuses; 
 import com.project.hostelms.LoginTypes;
 import com.project.hostelms.PaymentModes;
@@ -43,16 +43,19 @@ public class AdminController {
 	 
 	@Autowired 
 	private LoginsService adminService;  
+	
+	@Autowired
+	private com.project.hostelms.service.AdminService hostelAdminService;
 	   
     @Resource    private UsersRepository members;
 	    
 
     @Resource    private BlockRepository blocks;      
     @Resource    private RoomRepository rooms;         
-    @Resource    private RoomstudentsRepository roomstatus;       
+    @Resource    private RoomStudentRepository roomstatus;       
     @Resource    private ComplaintRepository complaints;  
     @Resource    private ComplaintcommentsRepository ccomments;       
-    @Resource    private RegistrationrequestsRepository regrequests;   
+    @Resource    private RegistrationRequestRepository regrequests;   
     @Resource    private VisitorRepository visitors;  
     @Resource    private NoticeboardRepository           noticeboard;
     @Resource    private StudentRepository           students;
@@ -96,30 +99,7 @@ public class AdminController {
     @ResponseBody
 	   public Map < String, Object > getvisitors( HttpServletRequest request,Model model)   {
 	     Map < String, Object > arr = new HashMap < > ();   
-	      
-	     
-	     List<Integer> fts=new ArrayList<Integer>();
-    	 List<Object> vrequests=new ArrayList<Object>();
-    	 
-    	 
-    	 Map < String, Object > arr1 = new HashMap < > ();  
-    	 
-      
-    	 
-    	 for(Visitor v:visitors.findByStatus(1,Sort.by("id").ascending()))
-    	 {
-    		 arr1 = new HashMap < > (); 
-    		 Room f=rooms.findById(v.getRoom());
-    		 arr1.put("room", f.getRoomno()+"("+blocks.findById(f.getBlock()).getName()+")"); 
-    		 arr1.put("visitor", v.getVisitorname());
-    		 arr1.put("purpose", v.getPurpose());
-    		 arr1.put("visitingtime", v.getVisitingtime());
-    		 arr1.put("user", members.findById(v.getStudent()).getFullname());
-    		 arr1.put("id", f.getId());
-    		 vrequests.add(arr1); 
-    	 }
-
-    	 arr.put("vrequests", vrequests);
+    	 arr.put("vrequests", hostelAdminService.getVisitors());
          return arr;
     }
     
@@ -161,7 +141,7 @@ public class AdminController {
     
     @GetMapping("/admin/registrationrequests") 
     public String registrationrequests(Model model){
-    	List<Registrationrequests> requests = regrequests.findByStatusOrderByIdDesc(1);
+    	List<RegistrationRequest> requests = regrequests.findByStatusOrderByIdDesc(1);
 
    	 model.addAttribute("courses",courses.AllAsTable());
     	
@@ -174,54 +154,12 @@ public class AdminController {
     public  String registartionaction(@PathVariable("id") int id,@PathVariable("status") int status,Model model){ 
     	 
 		try {
-		 Registrationrequests obj=regrequests.findById(id);
-		 if(status==1)		 obj.setStatus(2);
-		 if(status==0)		 obj.setStatus(0);
-		 regrequests.save(obj);
-		 if(status==1) { 
-			  
-			  if(students.findByRegno(obj.getRegno())!=null)
-				  throw new Exception("RegNo. already exists!");
-			  
-			  if(members.findByUsername(obj.getEmailid())!=null)
-				  throw new Exception("Email already exists!");
-			  
-			  if(members.findByMobilenumber(obj.getMobilenumber())!=null)
-				  throw new Exception("Mobile already exists!");
-			    
-			 
-		 Users u=new Users();
-	       u.setPassword(CommonFuns.decode64(obj.getPassword()));
-	       u.setStatus(1);
-	       u.setType(LoginTypes.STUDENT.name());
-	       u.setFullname(obj.getFullname()); 
-	       u.setUsername(obj.getEmailid());
-	       u.setMobilenumber(obj.getMobilenumber()); 
-	       u.setCreationdate(CommonFuns.ctm());
-	       members.save(u); 
-	       adminService.changeUserPassword(u, CommonFuns.decode64(obj.getPassword()));	
-	       
-	       Student sobj = new Student(); 
-		    sobj.setUser(u.getId());
-		    sobj.setAddress(obj.getAddress());
-		    sobj.setCourse(obj.getCourse());
-		    sobj.setDepartment(obj.getDepartment());
-		    sobj.setDob(obj.getDob());
-		    sobj.setGender(obj.getGender());
-		    sobj.setParentmobile(obj.getParentmobile());
-		    sobj.setParentname(obj.getParentname());
-		    sobj.setRegno(obj.getRegno());
-		    sobj.setYear(obj.getYear());
-		    sobj.setDeposit(0);
-   		sobj.setStatus(1);
-   		students.save(sobj);
-		 }
-	       return "redirect:/admin/registrationrequests?success=1";
-	       
+            hostelAdminService.processRegistration(id, status);
+	        return "redirect:/admin/registrationrequests?success=1";
 		}
 		catch(Exception e)
 		{  
-			 Registrationrequests obj=regrequests.findById(id);
+			 RegistrationRequest obj=regrequests.findById(id);
 		      obj.setStatus(1); 
 				 regrequests.save(obj);
 			   return "redirect:/admin/registrationrequests?error=1";
@@ -741,11 +679,11 @@ public class AdminController {
     		 arr.put("ctitle", c.getCtitle());
     		 arr.put("user",members.findById(c.getStudent()).getFullname());
     		 arr.put("creationdate",CommonFuns.Formatdt(c.getCreationdate()));
-    		 arr.put("status",Complaintstatus.getName(c.getStatus()));
+    		 arr.put("status",ComplaintState.getName(c.getStatus()));
     		 cmts.add(arr);
     	 }
     	 model.addAttribute("complaints", cmts);
-         model.addAttribute("statuses", Complaintstatus.values());
+         model.addAttribute("statuses", ComplaintState.values());
     	 return "admin/complaints";
     } 
     
@@ -1082,7 +1020,7 @@ public class AdminController {
 				 				arr.put("mobile", u.getMobilenumber());
 				 				Student s=students.findByUser(u.getId());
 				 				arr.put("course", courses.findById( s.getCourse()).getName());
-				 				List<Roomstudents> rs = roomstatus.findByStudentAndStatus(u.getId(), 1);
+				 				List<RoomStudent> rs = roomstatus.findByStudentAndStatus(u.getId(), 1);
 				 				arr.put("room", rs.size()==0?"NA":rooms.findById(rs.get(0).getRoom()).getRoomno());
 				 				arr.put("creationtime", u.getCreationdate()); 
 				 				arr.put("status", u.getStatus());  
@@ -1105,7 +1043,7 @@ public class AdminController {
 				 				arr.put("mobile", u.getMobilenumber());
 				 				Student s=students.findByUser(u.getId());
 				 				arr.put("course", courses.findById( s.getCourse()).getName());
-				 				List<Roomstudents> rs = roomstatus.findByStudentAndStatus(u.getId(), 1);
+				 				List<RoomStudent> rs = roomstatus.findByStudentAndStatus(u.getId(), 1);
 				 				arr.put("room", rs.size()==0?"NA":rooms.findById(rs.get(0).getRoom()).getRoomno());
 				 				arr.put("creationtime", u.getCreationdate()); 
 				 				arr.put("status", u.getStatus());  
@@ -1311,7 +1249,7 @@ public class AdminController {
 	 				case "read":			
 	 					 room=Integer.parseInt(request.getParameter("room"));
 	 					lst= new ArrayList<>();
-	 					for(Roomstudents bs:roomstatus.findByRoomAndStatus(room, 1))
+	 					for(RoomStudent bs:roomstatus.findByRoomAndStatus(room, 1))
 	 					{
 	 						arr=new Hashtable<String,Object>();
 	 						arr.put("id", bs.getId());   
@@ -1331,7 +1269,7 @@ public class AdminController {
 	 					break; 
 	 				case "readbyid":			
 	 					int id=Integer.parseInt(request.getParameter("id")); 
-	 					 Roomstudents bs=roomstatus.findById(id); 
+	 					 RoomStudent bs=roomstatus.findById(id); 
 	 						arr=new Hashtable<String,Object>();
 	 						arr.put("id", bs.getId());   
 	 						arr.put("student", members.findById(bs.getStudent()).getFullname());   
@@ -1345,9 +1283,9 @@ public class AdminController {
 	 				    		student=Integer.parseInt(request.getParameter("student")); 
 	 				    		fromdate=Date.valueOf(request.getParameter("fromdate")); 
 	 				    		rent=Float.parseFloat(request.getParameter("rent")); 
-	 				    		Roomstudents rs=roomstatus.findByRoomAndStudent(room,student);
+	 				    		RoomStudent rs=roomstatus.findByRoomAndStudent(room,student);
 	 				    		
-	 				    		rs=new Roomstudents();
+	 				    		rs=new RoomStudent();
 	 				    		
 	 				    		rs.setRoom(room);
 	 				    		rs.setStudent(student);
@@ -1422,7 +1360,7 @@ public class AdminController {
 		 			int days=ym.lengthOfMonth();
 		 			
 		 			ArrayList<Object> lst = new ArrayList<>();
- 					for(Roomstudents bs:roomstatus.findAll())
+ 					for(RoomStudent bs:roomstatus.findAll())
  					{
  						arr=new Hashtable<String,Object>();
  						int tdays=days;
