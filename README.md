@@ -1,154 +1,190 @@
-# HostelMS
+<div align="center">
 
-A Java web application for hostel administrators and students to manage room allocation, student records, fees, complaints, visitor requests, and notices through role-specific web portals.
+# 🏠 HostelMS
 
-![Java 17](https://img.shields.io/badge/Java-17-blue)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.1.0--SNAPSHOT-brightgreen)
-![Database: MySQL](https://img.shields.io/badge/Database-MySQL-blue)
+**A hostel management system that takes a student from registration to room, fees and complaints, with separate Admin and Student portals.**
 
-## Overview
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.1-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring_Security-Role_Based-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-Templates-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-Wrapper-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 
-HostelMS brings routine hostel administration into one server-rendered application: administrators work with student registration, rooms and allocations, fees, complaints, visitors, and notices; students can view room and fee information and submit complaints or visitor requests. Spring MVC controllers render Thymeleaf pages and handle form-backed actions, while Spring Data JPA repositories persist records in MySQL.
+[Features](#-features) · [Workflow](#-how-it-works) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [API](#-api-overview)
 
-The repository also includes a SQL export for the `spring_hostelms` database. Review it before use: the dump contains sample user records, password hashes, and personal-looking data.
+</div>
 
-## Features
+<!-- Add a screenshot here: ![HostelMS Dashboard](docs/screenshot.png) -->
 
-- Student self-registration creates a request for administrator review.
-- Admin pages manage students, departments, courses, hostel blocks, and rooms.
-- Room allocations connect students to rooms and monthly rent records.
-- Admin fee workflows generate monthly charges and record payment status and method.
-- Students can view room and fee history, edit profile details, and change passwords.
-- Students submit complaints and visitor requests; administrators can review complaints and respond.
-- Noticeboard pages provide notices to the portals.
-- Spring Security assigns separate `ADMIN` and `STUDENT` authorities to protected page areas.
+---
 
-## Technology
+## 📌 At a Glance
 
-| Area | Technology |
-| --- | --- |
-| Language | Java 17 |
-| Web and views | Spring Boot 3.1.0-SNAPSHOT, Spring MVC, Thymeleaf |
-| Persistence | Spring Data JPA, Hibernate, MySQL Connector/J |
-| Authentication | Spring Security, BCrypt password encoder |
-| Build | Maven 3.8.7 via Maven Wrapper |
+| | |
+|---|---|
+| **Problem** | Hostel administration done manually: registrations, room records, fees, complaints and visitors |
+| **Solution** | One web app with role-based portals for hostel staff and students |
+| **Roles** | `ADMIN` and `STUDENT`, separated by Spring Security authorities |
+| **Stack** | Java 17 · Spring Boot · Spring MVC · Thymeleaf · Spring Data JPA · MySQL |
 
-## Architecture
+## ✨ Features
+
+| 🛡️ Admin Portal | 🎓 Student Portal |
+|---|---|
+| Approve or reject registration requests | Sign up and track registration status |
+| Manage departments, courses, blocks, rooms and students | Update personal profile |
+| Allocate and deallocate rooms with occupancy dates and rent | View room assignment and fee records |
+| Generate monthly fees from rent, meal settings and extra charges | Submit complaints and follow their status |
+| Process complaints with comments and status updates | Register visitor requests |
+| Publish notices | View notices |
+
+## 🔄 How It Works
+
+The full journey of a student through the system:
 
 ```mermaid
 flowchart LR
-    Browser[Admin or student browser] --> Security[Spring Security]
-    Security --> Controllers[Spring MVC controllers]
-    Controllers --> Views[Thymeleaf templates]
-    Controllers --> Services[Application services]
-    Controllers --> Repositories[Spring Data JPA repositories]
-    Services --> Repositories
-    Repositories --> DB[(MySQL: spring_hostelms)]
+    A[Student signs up] --> B{Admin reviews}
+    B -->|Rejected| X[Request closed]
+    B -->|Approved| C[Student account active]
+    C --> D[Room allocated by Admin]
+    D --> E[Monthly fee generated]
+    E --> F[Student views fees]
+    C --> G[Complaints and visitor requests]
+    G --> H[Admin updates status]
 ```
 
-The application entry point is `hostelmsApplication`; `AdminController` and `StudentController` handle portal routes. Controllers use repositories directly and also call service classes for some operations. Templates under `src/main/resources/templates` render the UI. `SpringSecurity` configures form login, the BCrypt encoder, and authority checks for `/admin/**` and `/student/**`.
+**Fee generation:** each monthly record is calculated from the room rent, occupancy duration, meal settings and any additional charges.
 
-## Getting started
+## 🏗️ Architecture
 
-### Prerequisites
+```mermaid
+flowchart LR
+    Client[Browser] --> Web[Spring MVC + Thymeleaf]
+    Web --> Security[Spring Security]
+    Security --> Controller[Admin / Student Controller]
+    Controller --> Service[Service Layer]
+    Controller --> Repository[Spring Data JPA Repository]
+    Service --> Repository
+    Repository --> Database[(MySQL: spring_hostelms)]
+```
 
-- JDK 17
-- MySQL server available at `localhost:3306`
-- Git
+**Example request: a student submits a complaint**
 
-The Maven Wrapper downloads Maven 3.8.7 as configured in `.mvn/wrapper/maven-wrapper.properties`.
+```mermaid
+sequenceDiagram
+    participant Student as Student UI
+    participant Security as Spring Security
+    participant Controller as Student Controller
+    participant Repository as JPA Repository
+    participant Database as MySQL
 
-### Clone the repository
+    Student->>Security: POST /student/addcomplaintdb
+    Security->>Controller: Allow (STUDENT authority)
+    Controller->>Controller: Validate title and description
+    Controller->>Repository: Save Complaint
+    Repository->>Database: Insert complaint record
+    Database-->>Repository: Saved entity
+    Repository-->>Controller: Persisted complaint
+    Controller-->>Student: JSON success response
+```
+
+Spring Security restricts the route to the `STUDENT` authority. The controller validates the request, links it to the logged-in student and the selected room, and saves it through Spring Data JPA. An administrator can then view and update it from the admin portal.
+
+## 🧰 Tech Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| Frontend | HTML, CSS, JavaScript, Thymeleaf | Server-rendered pages and browser interactions |
+| Backend | Java 17, Spring Boot, Spring MVC | Application services and web routes |
+| Database | MySQL, Spring Data JPA | Persistent hostel records |
+| Auth | Spring Security, BCrypt | Login, authorities and password handling |
+| Tools | Maven Wrapper, Lombok, Hibernate | Build, boilerplate reduction and ORM |
+
+## 🚀 Quick Start
+
+**Prerequisites:** JDK 17, MySQL, Git (Maven is included through the wrapper)
 
 ```bash
+# 1. Clone
 git clone https://github.com/JaganRaju07/HostelMS.git
 cd HostelMS
-```
 
-### Create and configure the database
+# 2. Create the database (or import the included SQL export)
+mysql -u <your-username> -p -e "CREATE DATABASE spring_hostelms;"
+mysql -u <your-username> -p spring_hostelms < 127_0_0_1_spring_hostelms.sql
 
-The application connects to MySQL database `spring_hostelms`. Create it, or import the included SQL dump to create and populate it:
+# 3. Set database credentials (macOS/Linux)
+export DB_USERNAME=<your-mysql-username>
+export DB_PASSWORD=<your-mysql-password>
 
-```sql
-CREATE DATABASE spring_hostelms;
-```
-
-The dump is [`127_0_0_1_spring_hostelms.sql`](127_0_0_1_spring_hostelms.sql). Inspect it before importing; it includes sample account and personal-looking records. Do not reuse its data in a live environment.
-
-Set database credentials in the environment before starting the application. The configuration defaults to username `root` and password `Mysql@1234` when the variables are unset; replace these defaults with local credentials.
-
-| Variable | Purpose | Default in `application.properties` |
-| --- | --- | --- |
-| `DB_USERNAME` | MySQL username | `root` |
-| `DB_PASSWORD` | MySQL password | `Mysql@1234` |
-
-### Run
-
-macOS/Linux:
-
-```bash
-export DB_USERNAME=root
-export DB_PASSWORD=your-local-password
+# 4. Run
 ./mvnw spring-boot:run
 ```
 
-Windows Command Prompt:
+On Windows, set the variables with `set DB_USERNAME=...` and `set DB_PASSWORD=...`, then run `mvnw.cmd spring-boot:run`.
 
-```bat
-set DB_USERNAME=root
-set DB_PASSWORD=your-local-password
-mvnw.cmd spring-boot:run
-```
+Open **http://localhost:8080**. The app connects to `localhost:3306/spring_hostelms` by default.
 
-Open <http://localhost:8080>. The repository does not document default login credentials. Use the registration flow and administrator approval, or configure an account in your local database.
+Run the test: `./mvnw test`
 
-## Testing
-
-Run the Maven test phase with the wrapper:
-
-```bash
-./mvnw test
-```
-
-On Windows Command Prompt:
-
-```bat
-mvnw.cmd test
-```
-
-The checked-in test is a Spring Boot context-load test (`OsfsystemApplicationTests`). No CI workflow or lint command is present in the repository.
-
-## Project structure
+<details>
+<summary><b>📁 Project Structure</b></summary>
 
 ```text
-.
-├── .mvn/wrapper/                  Maven Wrapper configuration
-├── src/main/java/com/project/hostelms/
-│   ├── config/                    Spring Security configuration
-│   ├── controller/                Admin and student web controllers
-│   ├── dto/, entity/              Transfer objects and persistence entities
-│   ├── exception/                 Exception-related classes
-│   ├── repository/                Spring Data repositories
-│   ├── security/                  User-details integration
-│   └── service/                   Application services
-├── src/main/resources/
-│   ├── application.properties     MySQL and JPA settings
-│   ├── static/                    Browser assets
-│   └── templates/                 Thymeleaf pages
-├── src/test/                      Application context test
-├── 127_0_0_1_spring_hostelms.sql  Database export with sample data
-├── mvnw, mvnw.cmd                 Maven Wrapper launchers
-└── pom.xml                        Dependencies and build configuration
+src/main/java/com/project/hostelms/   # Controllers, services, repositories, entities, security
+src/main/resources/templates/         # Administrator and student Thymeleaf pages
+src/main/resources/static/            # CSS, JavaScript, images and frontend libraries
+src/main/resources/application.properties
+src/test/java/                        # Spring Boot context test
+127_0_0_1_spring_hostelms.sql         # MySQL database export
+pom.xml                               # Maven dependencies and build configuration
+mvnw / mvnw.cmd                       # Maven Wrapper launchers
 ```
 
-## Security and limitations
+</details>
 
-- `SpringSecurity` explicitly disables CSRF protection. Review and address this before exposing the application beyond a local development environment.
-- `application.properties` configures Hibernate with `ddl-auto=update`; review schema-management and migration practices before using persistent or production data.
-- Database connection settings default to local development credentials if environment variables are not set. Supply non-default secrets outside the repository.
-- The included SQL dump contains sample user records and password hashes. Treat it as untrusted demo data, not a production database.
-- The checked-in automated test covers application context startup only; it does not demonstrate end-to-end workflows or broader behavior.
+## 🔌 API Overview
 
-## License
+<details>
+<summary><b>View main endpoints</b></summary>
 
-No licence specified. <!-- VERIFY: Add a licence file and update this section if the project is intended to be distributed under a specific licence. -->
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/login` | Display the login page |
+| POST | `/registerdb` | Submit a student registration request |
+| POST | `/checkAvailability` | Check whether an email is already registered |
+| POST | `/loadcourses` | Retrieve courses for a department |
+| POST | `/student/addcomplaintdb` | Create a student complaint |
+| GET | `/student/complaints` | Display student complaints |
+| POST | `/student/addvisitordb` | Register a visitor request |
+| GET | `/admin/registrationrequests` | List pending registration requests |
+| POST | `/admin/allocateroom` | Allocate or deallocate a room |
+| POST | `/admin/newgeneratefees` | Generate monthly fee records |
+
+</details>
+
+## 🧠 What I Learned
+
+- Used Spring Security authorities to separate administrator and student access
+- Split registration and hostel logic into service and repository layers
+- Built server-rendered workflows with Thymeleaf, Spring MVC and JPA entities
+- Designed fee calculation around rent, occupancy duration, meal settings and extra charges
+
+## 🔮 Future Improvements
+
+- [ ] Add database migrations instead of relying on Hibernate schema updates
+- [ ] Expand automated tests beyond the context-load test
+- [ ] Reintroduce CSRF protection after configuring browser form handling
+- [ ] Use the service layer consistently instead of direct repository access in controllers
+
+---
+
+<div align="center">
+
+**Built by Jagan Raju B**
+
+[GitHub](https://github.com/JaganRaju07) · [LinkedIn](https://www.linkedin.com/in/jagan-raju)
+
+</div>
