@@ -4,6 +4,8 @@ This document combines the architecture, feature trace, endpoint inventory, auth
 
 ---
 
+HostelMS is a hostel management system built with Spring Boot, Thymeleaf and MySQL. It has two roles. Students sign up, an admin approves them, and then the admin allocates rooms and generates monthly fees. Students can raise complaints and visitor requests. It’s a server-rendered MVC app: Spring Security checks the role on every request, controllers call services or JPA repositories, and Thymeleaf renders the page. Passwords are hashed with BCrypt. Looking back, I’d re-enable CSRF, add transactions around room allocation and fee generation, add pagination, and move to Flyway for migrations.
+
 ## 1. High-Level Architecture
 
 ### Project Type
