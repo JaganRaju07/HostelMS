@@ -11,7 +11,7 @@
 ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-Wrapper-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 
-[Features](#-features) · [Workflow](#-how-it-works) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [API](#-api-overview)
+[Features](#-features) · [Workflow](#-how-it-works) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [Routes](#-main-routes)
 
 </div>
 
@@ -26,22 +26,25 @@
 | **Problem** | Hostel administration done manually: registrations, room records, fees, complaints and visitors |
 | **Solution** | One web app with role-based portals for hostel staff and students |
 | **Roles** | `ADMIN` and `STUDENT`, separated by Spring Security authorities |
+| **Type** | Server-rendered Spring MVC monolith (Thymeleaf pages, no separate frontend app) |
 | **Stack** | Java 17 · Spring Boot · Spring MVC · Thymeleaf · Spring Data JPA · MySQL |
 
 ## ✨ Features
 
 | 🛡️ Admin Portal | 🎓 Student Portal |
 |---|---|
-| Approve or reject registration requests | Sign up and track registration status |
-| Manage departments, courses, blocks, rooms and students | Update personal profile |
-| Allocate and deallocate rooms with occupancy dates and rent | View room assignment and fee records |
-| Generate monthly fees from rent, meal settings and extra charges | Submit complaints and follow their status |
-| Process complaints with comments and status updates | Register visitor requests |
-| Publish notices | View notices |
+| Dashboard with block, room, occupancy and pending-request counts | Dashboard with unpaid fees and balance |
+| Approve or reject student registration requests | Sign up and submit a registration request |
+| Manage blocks, rooms, departments, courses and students | View room allocations |
+| Allocate and deallocate rooms | View monthly fee history and balance |
+| Generate monthly fees and mark them as paid | Raise complaints and add comments |
+| Reply to and update complaints | Register and remove visitor requests |
+| Publish notices and manage hostel settings | Update profile and change password |
+| Enable or disable student accounts | |
 
 ## 🔄 How It Works
 
-The full journey of a student through the system:
+The journey of a student through the system:
 
 ```mermaid
 flowchart LR
@@ -52,7 +55,7 @@ flowchart LR
     D --> E[Monthly fee generated]
     E --> F[Student views fees]
     C --> G[Complaints and visitor requests]
-    G --> H[Admin updates status]
+    G --> H[Admin updates complaint status]
 ```
 
 **Fee generation:** each monthly record is calculated from the room rent, occupancy duration, meal settings and any additional charges.
@@ -92,15 +95,17 @@ sequenceDiagram
 
 Spring Security restricts the route to the `STUDENT` authority. The controller validates the request, links it to the logged-in student and the selected room, and saves it through Spring Data JPA. An administrator can then view and update it from the admin portal.
 
+**Login flow:** the form posts to `/login`, handled by Spring Security. `CustomLoginsDetailsService` loads the user by username, rejects inactive accounts, and checks the BCrypt password hash. The user's type becomes the `ADMIN` or `STUDENT` authority, and the user is redirected to the matching dashboard.
+
 ## 🧰 Tech Stack
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| Frontend | HTML, CSS, JavaScript, Thymeleaf | Server-rendered pages and browser interactions |
+| Frontend | HTML, CSS, Bootstrap, JavaScript, jQuery, Thymeleaf | Server-rendered pages and browser interactions |
 | Backend | Java 17, Spring Boot, Spring MVC | Application services and web routes |
-| Database | MySQL, Spring Data JPA | Persistent hostel records |
-| Auth | Spring Security, BCrypt | Login, authorities and password handling |
-| Tools | Maven Wrapper, Lombok, Hibernate | Build, boilerplate reduction and ORM |
+| Database | MySQL, Spring Data JPA, Hibernate | Persistent hostel records and ORM |
+| Auth | Spring Security, BCrypt | Login, role authorities and password hashing |
+| Tools | Maven Wrapper, Lombok | Build and boilerplate reduction |
 
 ## 🚀 Quick Start
 
@@ -111,7 +116,7 @@ Spring Security restricts the route to the `STUDENT` authority. The controller v
 git clone https://github.com/JaganRaju07/HostelMS.git
 cd HostelMS
 
-# 2. Create the database (or import the included SQL export)
+# 2. Create the database and import the included SQL export
 mysql -u <your-username> -p -e "CREATE DATABASE spring_hostelms;"
 mysql -u <your-username> -p spring_hostelms < 127_0_0_1_spring_hostelms.sql
 
@@ -126,8 +131,6 @@ export DB_PASSWORD=<your-mysql-password>
 On Windows, set the variables with `set DB_USERNAME=...` and `set DB_PASSWORD=...`, then run `mvnw.cmd spring-boot:run`.
 
 Open **http://localhost:8080**. The app connects to `localhost:3306/spring_hostelms` by default.
-
-Run the test: `./mvnw test`
 
 <details>
 <summary><b>📁 Project Structure</b></summary>
@@ -145,23 +148,27 @@ mvnw / mvnw.cmd                       # Maven Wrapper launchers
 
 </details>
 
-## 🔌 API Overview
+## 🔌 Main Routes
+
+HostelMS is a server-rendered MVC app, so these are page routes and AJAX-style endpoints rather than a standalone REST API.
 
 <details>
-<summary><b>View main endpoints</b></summary>
+<summary><b>View main routes</b></summary>
 
-| Method | Endpoint | Description |
+| Method | Route | Description |
 |---|---|---|
 | GET | `/login` | Display the login page |
 | POST | `/registerdb` | Submit a student registration request |
 | POST | `/checkAvailability` | Check whether an email is already registered |
 | POST | `/loadcourses` | Retrieve courses for a department |
+| GET | `/student/dashboard` | Show unpaid fees and balance |
 | POST | `/student/addcomplaintdb` | Create a student complaint |
-| GET | `/student/complaints` | Display student complaints |
 | POST | `/student/addvisitordb` | Register a visitor request |
+| GET | `/admin/dashboard` | Show block, room, occupancy and pending-request counts |
 | GET | `/admin/registrationrequests` | List pending registration requests |
 | POST | `/admin/allocateroom` | Allocate or deallocate a room |
 | POST | `/admin/newgeneratefees` | Generate monthly fee records |
+| POST | `/admin/feespaid` | Mark a fee as paid |
 
 </details>
 
@@ -174,10 +181,11 @@ mvnw / mvnw.cmd                       # Maven Wrapper launchers
 
 ## 🔮 Future Improvements
 
-- [ ] Add database migrations instead of relying on Hibernate schema updates
-- [ ] Expand automated tests beyond the context-load test
-- [ ] Reintroduce CSRF protection after configuring browser form handling
-- [ ] Use the service layer consistently instead of direct repository access in controllers
+- [ ] Re-enable CSRF protection and add ownership checks on student records
+- [ ] Wrap room allocation and fee generation in transactions with locking
+- [ ] Add pagination and replace N+1 query loops with joins
+- [ ] Use Flyway migrations instead of Hibernate schema updates
+- [ ] Add integration and security tests beyond the context-load test
 
 ---
 
